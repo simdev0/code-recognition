@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TextRecognition3</string>
+
+    <string-array name="code_options">
+        <item>for loop start</item>
+        <item>if statement start</item>
+    </string-array>
+</resources>
