@@ -37,35 +37,42 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private static final int TEXT_COLOR = Color.WHITE;
     private static final int FOR_CODE_COLOR = Color.RED;
     private static final int IF_CODE_COLOR = Color.BLUE;
+    private static final int VARIABLE_DECLARATION_CODE_COLOR = Color.GREEN;
 
 
     private static Paint rectPaint;
     private static Paint textPaint;
-    private final TextBlock text;
+    private TextBlock text;
     public boolean ForCodeFound = true;
     public boolean IfCodeFound = true;
+    public boolean VariableCodeFound = true;
 
-    public OcrGraphic(GraphicOverlay overlay, TextBlock text, boolean forCodeFound, boolean ifCodeFound) {
+
+    public OcrGraphic(GraphicOverlay overlay, TextBlock text, boolean forCodeFound, boolean ifCodeFound, boolean variableCodeFound) {
         super(overlay);
 
-        this.text = text;
-        this.ForCodeFound = forCodeFound;
-        this.IfCodeFound = ifCodeFound;
+        if (text != null) {
+            this.text = text;
+            this.ForCodeFound = forCodeFound;
+            this.IfCodeFound = ifCodeFound;
+            this.VariableCodeFound = variableCodeFound;
 
-        if (rectPaint == null) {
-            rectPaint = new Paint();
-            rectPaint.setColor(TEXT_COLOR);
-            rectPaint.setStyle(Paint.Style.STROKE);
-            rectPaint.setStrokeWidth(4.0f);
-        }
+            if (rectPaint == null) {
+                rectPaint = new Paint();
+                rectPaint.setColor(TEXT_COLOR);
+                rectPaint.setStyle(Paint.Style.STROKE);
+                rectPaint.setStrokeWidth(4.0f);
+            }
 
-        if (textPaint == null) {
+            if (textPaint == null) {
 //            textPaint = new Paint();
 //            textPaint.setColor(TEXT_COLOR);
 //            textPaint.setTextSize(54.0f);
+            }
+            // Redraw the overlay, as this graphic has been added.
+            postInvalidate();
         }
-        // Redraw the overlay, as this graphic has been added.
-        postInvalidate();
+
     }
 
     public int getId() {
@@ -108,12 +115,15 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             rectPaint.setColor(FOR_CODE_COLOR);
         } else if (IfCodeFound) {
             rectPaint.setColor(IF_CODE_COLOR);
+        } else if (VariableCodeFound) {
+            rectPaint.setColor(VARIABLE_DECLARATION_CODE_COLOR);
         } else {
             rectPaint.setColor(TEXT_COLOR);
         }
 
 
-        text.getBoundingBox().top +=160;
+//        text.getBoundingBox().top +=160;
+        text.getBoundingBox().right += 100;
         RectF rect = new RectF(text.getBoundingBox());
         rect = translateRect(rect);
         canvas.drawRect(rect, rectPaint);

@@ -22,6 +22,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
     GraphicOverlay<OcrGraphic> graphicOverlay;
     CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
+
+    Spinner spinner;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> arraySpinner = new ArrayList<>();;
+
 
 
     @Override
@@ -60,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.text_view);
         graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        spinner = (Spinner) findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.code_options, android.R.layout.simple_spinner_item);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void receiveDetections(Detector.Detections<TextBlock> detections) {
                     graphicOverlay.clear();
+                    arraySpinner.clear();
                     final SparseArray<TextBlock> items = detections.getDetectedItems();
                     if (items.size() != 0) {
                         textView.post(new Runnable() {
@@ -135,28 +142,44 @@ public class MainActivity extends AppCompatActivity {
 
                                     TextBlock item = items.valueAt(i);
                                     if (item != null && item.getValue() != null) {
-                                        OcrGraphic graphic;
-//                                        stringBuilder.append(item.getValue());
-//                                        stringBuilder.append("\n");
+                                        OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false, false, false);
+                                        boolean integerFound = item.getValue().startsWith("int");
+                                        boolean floatFound = item.getValue().startsWith("float");
+                                        boolean stringFound = item.getValue().startsWith("String");
+                                        boolean charFound = item.getValue().startsWith("char");
+                                        boolean booleanFound = item.getValue().startsWith("boolean");
 
-
-                                        if (item.getValue().startsWith("for")) {
-                                            graphic = new OcrGraphic(graphicOverlay, item, true, false);
-                                            count++;
-                                            stringBuilder.append("Good Job! You found a for loop! "+count +" point(s)");
+                                        if(integerFound || floatFound || stringFound || charFound || booleanFound){
+                                            graphic = new OcrGraphic(graphicOverlay, item, false, false, true);
+                                            stringBuilder.append("Good Job! You found a variable declaration!\n" );
+                                            if(!arraySpinner.contains("Variable Declaration")) {
+                                                arraySpinner.add("Variable Declaration");
+                                            }
                                         } else if (item.getValue().startsWith("if")) {
-                                            graphic = new OcrGraphic(graphicOverlay, item, false, true);
-                                            count++;
-                                            stringBuilder.append("Good Job! You found a if statement! "+count +" point(s)");
-                                        } else {
-                                            graphic = new OcrGraphic(graphicOverlay, item, false, false);
-                                            stringBuilder.append("nope "+count);
+                                            graphic = new OcrGraphic(graphicOverlay, item, false, true, false);
+                                            stringBuilder.append("Good Job! You found an if statement!\n");
+                                            if(!arraySpinner.contains("if Statement")){
+                                                arraySpinner.add("if Statement");
+                                            }
+
+                                        } else if (item.getValue().startsWith("for")) {
+                                            graphic = new OcrGraphic(graphicOverlay, item, true, false, false);
+                                            stringBuilder.append("Good Job! You found a for loop!\n");
+                                            if(!arraySpinner.contains("for Loop")) {
+                                                arraySpinner.add("for Loop");
+                                            }
+
                                         }
+//                                        else {
+//                                            graphic = new OcrGraphic(graphicOverlay, item, false, false, false);
+//                                            stringBuilder.append("No Code Found...\n");
+//                                            arraySpinner.clear();
+//                                        }
 
                                         graphicOverlay.add(graphic);
                                     }
                                 }
-
+                                adapter.notifyDataSetChanged();
                                 textView.setText(stringBuilder.toString());
                             }
                         });
@@ -169,3 +192,8 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
+// CURRENT BUG: selecting item in spinner is difficult since the adapter continuously set
+// FOR SERIOUS GAMES: button to different screen to show count for variable dec, for loop, if statement and challenge
+// -- compare item with array of foundCode. if the item isn't in that array, count++ and add item to array,
+// if code found, make DING noise and either surround code with box or show a tick
+// to avoid infinite count incrementation, have an array for each type and compare the text to whatever's in the array
