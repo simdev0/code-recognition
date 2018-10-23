@@ -3,6 +3,7 @@ package com.simdev.project.textrecognition3;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,9 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     SurfaceView cameraView;
     TextView textView;
+    View crossHairBox;
     GraphicOverlay<OcrGraphic> graphicOverlay;
     CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinner;
     ArrayAdapter<String> adapter;
     ArrayList<String> arraySpinner = new ArrayList<>();;
+
+    boolean screenCapture = false;
 
 
 
@@ -64,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
 
         cameraView = (SurfaceView) findViewById(R.id.surface_view);
         textView = (TextView) findViewById(R.id.text_view);
-        graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
+        crossHairBox = (View) findViewById(R.id.crossHairBox);
+        Button button = (Button) findViewById(R.id.capture);
 
+        graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
         spinner = (Spinner) findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -118,15 +126,20 @@ public class MainActivity extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(), "WORKING??", Toast.LENGTH_SHORT);
 //            textRecognizer.setProcessor(new OcrDetectorProcessor(getApplicationContext(), graphicOverlay));
 
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    //change boolean value
+                    screenCapture = true;
+                }
+            });
+
             textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
                 @Override
                 public void release() {
 
                 }
-
-                //array of text blocks called items
-                //use Toast.makeText to debug
-                int count = 0;
 
                 @Override
                 public void receiveDetections(Detector.Detections<TextBlock> detections) {
@@ -137,46 +150,65 @@ public class MainActivity extends AppCompatActivity {
                         textView.post(new Runnable() {
                             @Override
                             public void run() {
+                                int crossHairLocation[] = new int[2];
+
+                                crossHairBox.getLocationOnScreen(crossHairLocation);
+
                                 StringBuilder stringBuilder = new StringBuilder();
                                 for (int i = 0; i < items.size(); i++) {
+//                                    stringBuilder.append("0: "+crossHairLocation[0]+"\n"); //0
+//                                    stringBuilder.append("1: "+crossHairLocation[1]+"\n"); //471 LANDSCAPE - 891 PORTRAIT
 
                                     TextBlock item = items.valueAt(i);
-                                    if (item != null && item.getValue() != null) {
-                                        OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false, false, false);
-                                        boolean integerFound = item.getValue().startsWith("int");
-                                        boolean floatFound = item.getValue().startsWith("float");
-                                        boolean stringFound = item.getValue().startsWith("String");
-                                        boolean charFound = item.getValue().startsWith("char");
-                                        boolean booleanFound = item.getValue().startsWith("boolean");
 
-                                        if(integerFound || floatFound || stringFound || charFound || booleanFound){
-                                            graphic = new OcrGraphic(graphicOverlay, item, false, false, true);
-                                            stringBuilder.append("Good Job! You found a variable declaration!\n" );
-                                            if(!arraySpinner.contains("Variable Declaration")) {
-                                                arraySpinner.add("Variable Declaration");
-                                            }
-                                        } else if (item.getValue().startsWith("if")) {
-                                            graphic = new OcrGraphic(graphicOverlay, item, false, true, false);
-                                            stringBuilder.append("Good Job! You found an if statement!\n");
-                                            if(!arraySpinner.contains("if Statement")){
-                                                arraySpinner.add("if Statement");
+                                    if (item != null && item.getValue() != null && screenCapture) {
+
+                                        //will need to change value to something uniform across all devices
+                                        //e.g. subtract size of cross hair box
+                                        if(item.getBoundingBox().top >= crossHairLocation[1]-130 &&
+                                                item.getBoundingBox().bottom <= crossHairLocation[1]+150) {
+                                            OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false, false, false);
+
+                                            boolean integerFound = item.getValue().startsWith("int");
+                                            boolean doubleFound = item.getValue().startsWith("double");
+                                            boolean floatFound = item.getValue().startsWith("float");
+                                            boolean stringFound = item.getValue().startsWith("String");
+                                            boolean charFound = item.getValue().startsWith("char");
+                                            boolean booleanFound = item.getValue().startsWith("boolean");
+
+                                            if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
+                                                graphic = new OcrGraphic(graphicOverlay, item, false, false, true);
+//                                            stringBuilder.append("Good Job! You found a variable declaration!\n" );
+                                                if (!arraySpinner.contains("Variable Declaration")) {
+                                                    arraySpinner.add("Variable Declaration");
+                                                }
+                                            } else if (item.getValue().startsWith("if")) {
+                                                graphic = new OcrGraphic(graphicOverlay, item, false, true, false);
+//                                            stringBuilder.append("Good Job! You found an if statement!\n");
+                                                if (!arraySpinner.contains("if Statement")) {
+                                                    arraySpinner.add("if Statement");
+                                                }
+
+                                            } else if (item.getValue().startsWith("for")) {
+                                                graphic = new OcrGraphic(graphicOverlay, item, true, false, false);
+//                                            stringBuilder.append("Good Job! You found a for loop!\n");
+                                                if (!arraySpinner.contains("for Loop")) {
+                                                    arraySpinner.add("for Loop");
+                                                }
+
                                             }
 
-                                        } else if (item.getValue().startsWith("for")) {
-                                            graphic = new OcrGraphic(graphicOverlay, item, true, false, false);
-                                            stringBuilder.append("Good Job! You found a for loop!\n");
-                                            if(!arraySpinner.contains("for Loop")) {
-                                                arraySpinner.add("for Loop");
-                                            }
-
+                                            Handler handler = new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    //write your code here to be executed after 1 second
+                                                    screenCapture = false;
+                                                }
+                                            }, 1500);
+                                            //1.5 sec to find item
+                                            graphicOverlay.add(graphic);
                                         }
-//                                        else {
-//                                            graphic = new OcrGraphic(graphicOverlay, item, false, false, false);
-//                                            stringBuilder.append("No Code Found...\n");
-//                                            arraySpinner.clear();
-//                                        }
-
-                                        graphicOverlay.add(graphic);
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
