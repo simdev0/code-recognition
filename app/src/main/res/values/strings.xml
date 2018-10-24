@@ -5,4 +5,5 @@
         <item>for loop start</item>
         <item>if statement start</item>
     </string-array>
+    <string name="title_activity_challenge">ChallengeActivity</string>
 </resources>

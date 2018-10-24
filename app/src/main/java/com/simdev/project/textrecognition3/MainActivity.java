@@ -1,6 +1,7 @@
 package com.simdev.project.textrecognition3;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     boolean screenCapture = false;
 
+    int currentChallenge = 1;
+
 
 
     @Override
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.text_view);
         crossHairBox = (View) findViewById(R.id.crossHairBox);
         Button button = (Button) findViewById(R.id.capture);
+        Button challengeBtn = (Button) findViewById(R.id.challengebtn);
 
         graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
@@ -82,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
@@ -135,6 +138,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            challengeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+
+                    Intent intent = new Intent(MainActivity.this, ChallengeActivity.class);
+                    intent.putExtra("CHALLENGE_NO", currentChallenge+"");
+                    MainActivity.this.startActivityForResult(intent, 1);
+                }
+            });
+
+
             textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
                 @Override
                 public void release() {
@@ -151,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 int crossHairLocation[] = new int[2];
-
+                                Log.d("", "its at "+currentChallenge);
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
 
                                 StringBuilder stringBuilder = new StringBuilder();
@@ -179,22 +194,25 @@ public class MainActivity extends AppCompatActivity {
                                             if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
                                                 graphic = new OcrGraphic(graphicOverlay, item, false, false, true);
 //                                            stringBuilder.append("Good Job! You found a variable declaration!\n" );
-                                                if (!arraySpinner.contains("Variable Declaration")) {
-                                                    arraySpinner.add("Variable Declaration");
-                                                }
+//                                                if (!arraySpinner.contains("Variable Declaration")) {
+//                                                    arraySpinner.add("Variable Declaration");
+//                                                }
+//                                                if(currentChallenge == 1){
+//                                                    stringBuilder.append("Challenge 1 Complete! Check Screen for next Challenge");
+//                                                }
                                             } else if (item.getValue().startsWith("if")) {
                                                 graphic = new OcrGraphic(graphicOverlay, item, false, true, false);
 //                                            stringBuilder.append("Good Job! You found an if statement!\n");
-                                                if (!arraySpinner.contains("if Statement")) {
-                                                    arraySpinner.add("if Statement");
-                                                }
+//                                                if (!arraySpinner.contains("if Statement")) {
+//                                                    arraySpinner.add("if Statement");
+//                                                }
 
                                             } else if (item.getValue().startsWith("for")) {
                                                 graphic = new OcrGraphic(graphicOverlay, item, true, false, false);
 //                                            stringBuilder.append("Good Job! You found a for loop!\n");
-                                                if (!arraySpinner.contains("for Loop")) {
-                                                    arraySpinner.add("for Loop");
-                                                }
+//                                                if (!arraySpinner.contains("for Loop")) {
+//                                                    arraySpinner.add("for Loop");
+//                                                }
 
                                             }
 
@@ -221,6 +239,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                String number = data.getStringExtra("challenge_no");
+                currentChallenge = Integer.parseInt(number);
+                Log.d("PICKING UP ON NUMBER ", currentChallenge+"");
+            }
+        }
+    }
+
+
+
 }
 
 
