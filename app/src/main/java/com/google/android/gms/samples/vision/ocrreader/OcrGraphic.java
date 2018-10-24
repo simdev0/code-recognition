@@ -35,6 +35,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private int id;
 
     private static final int TEXT_COLOR = Color.WHITE;
+    private static final int SWITCH_CODE_COLOR = Color.YELLOW;
     private static final int FOR_CODE_COLOR = Color.RED;
     private static final int IF_CODE_COLOR = Color.BLUE;
     private static final int VARIABLE_DECLARATION_CODE_COLOR = Color.GREEN;
@@ -43,16 +44,18 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private static Paint rectPaint;
     private static Paint textPaint;
     private TextBlock text;
+    public boolean SwitchCodeFound = true;
     public boolean ForCodeFound = true;
     public boolean IfCodeFound = true;
     public boolean VariableCodeFound = true;
 
 
-    public OcrGraphic(GraphicOverlay overlay, TextBlock text, boolean forCodeFound, boolean ifCodeFound, boolean variableCodeFound) {
+    public OcrGraphic(GraphicOverlay overlay, TextBlock text, boolean switchCodeFound, boolean forCodeFound, boolean ifCodeFound, boolean variableCodeFound) {
         super(overlay);
 
         if (text != null) {
             this.text = text;
+            this.SwitchCodeFound = switchCodeFound;
             this.ForCodeFound = forCodeFound;
             this.IfCodeFound = ifCodeFound;
             this.VariableCodeFound = variableCodeFound;
@@ -111,7 +114,9 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         }
 
         // Draws the bounding box around the TextBlock.
-        if (ForCodeFound) {
+        if (SwitchCodeFound) {
+            rectPaint.setColor(SWITCH_CODE_COLOR);
+        } else if (ForCodeFound) {
             rectPaint.setColor(FOR_CODE_COLOR);
         } else if (IfCodeFound) {
             rectPaint.setColor(IF_CODE_COLOR);

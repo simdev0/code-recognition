@@ -2,6 +2,7 @@ package com.simdev.project.textrecognition3;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,12 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
     Spinner spinner;
     ArrayAdapter<String> adapter;
-    ArrayList<String> arraySpinner = new ArrayList<>();;
+    ArrayList<String> arraySpinner = new ArrayList<>();
+    ;
 
+    Button button;
     boolean screenCapture = false;
 
-    int currentChallenge = 1;
-
+    int currentChallengeNum = 1;
+    boolean challengeComplete = false;
 
 
     @Override
@@ -71,10 +74,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
         cameraView = (SurfaceView) findViewById(R.id.surface_view);
         textView = (TextView) findViewById(R.id.text_view);
         crossHairBox = (View) findViewById(R.id.crossHairBox);
-        Button button = (Button) findViewById(R.id.capture);
+        button = (Button) findViewById(R.id.capture);
         Button challengeBtn = (Button) findViewById(R.id.challengebtn);
 
         graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        Log.d("MainActivity", "testing...");
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
@@ -131,8 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     //change boolean value
                     screenCapture = true;
                 }
@@ -140,11 +145,10 @@ public class MainActivity extends AppCompatActivity {
 
             challengeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
 
                     Intent intent = new Intent(MainActivity.this, ChallengeActivity.class);
-                    intent.putExtra("CHALLENGE_NO", currentChallenge+"");
+                    intent.putExtra("CHALLENGE_NO", currentChallengeNum + "");
                     MainActivity.this.startActivityForResult(intent, 1);
                 }
             });
@@ -166,23 +170,28 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 int crossHairLocation[] = new int[2];
-                                Log.d("", "its at "+currentChallenge);
+                                Log.d("", "its at " + currentChallengeNum);
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
 
                                 StringBuilder stringBuilder = new StringBuilder();
+                                if (challengeComplete) {
+                                    stringBuilder.append("Challenge " + (currentChallengeNum - 1) + " complete!\n" +
+                                            "Check Challenges screen for next challenge.");
+                                    button.setEnabled(false);
+                                }
                                 for (int i = 0; i < items.size(); i++) {
 //                                    stringBuilder.append("0: "+crossHairLocation[0]+"\n"); //0
 //                                    stringBuilder.append("1: "+crossHairLocation[1]+"\n"); //471 LANDSCAPE - 891 PORTRAIT
 
                                     TextBlock item = items.valueAt(i);
 
-                                    if (item != null && item.getValue() != null && screenCapture) {
+                                    if (item != null && item.getValue() != null && screenCapture && !challengeComplete) {
 
                                         //will need to change value to something uniform across all devices
                                         //e.g. subtract size of cross hair box
-                                        if(item.getBoundingBox().top >= crossHairLocation[1]-130 &&
-                                                item.getBoundingBox().bottom <= crossHairLocation[1]+150) {
-                                            OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false, false, false);
+                                        if (item.getBoundingBox().top >= crossHairLocation[1] - 130 &&
+                                                item.getBoundingBox().bottom <= crossHairLocation[1] + 150) {
+                                            OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false,false, false, false);
 
                                             boolean integerFound = item.getValue().startsWith("int");
                                             boolean doubleFound = item.getValue().startsWith("double");
@@ -192,28 +201,59 @@ public class MainActivity extends AppCompatActivity {
                                             boolean booleanFound = item.getValue().startsWith("boolean");
 
                                             if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, false, false, true);
-//                                            stringBuilder.append("Good Job! You found a variable declaration!\n" );
+                                                graphic = new OcrGraphic(graphicOverlay, item, false, false, false, true);
 //                                                if (!arraySpinner.contains("Variable Declaration")) {
 //                                                    arraySpinner.add("Variable Declaration");
 //                                                }
-//                                                if(currentChallenge == 1){
-//                                                    stringBuilder.append("Challenge 1 Complete! Check Screen for next Challenge");
-//                                                }
+
+                                                if (currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 2;
+                                                    challengeComplete = true;
+                                                } else if (currentChallengeNum == 2 && (stringFound || charFound)) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 3;
+                                                    challengeComplete = true;
+                                                } else if (currentChallengeNum == 3 && (booleanFound)) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 4;
+                                                    challengeComplete = true;
+                                                }
+
                                             } else if (item.getValue().startsWith("if")) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, false, true, false);
-//                                            stringBuilder.append("Good Job! You found an if statement!\n");
+                                                graphic = new OcrGraphic(graphicOverlay, item, false, false, true, false);
 //                                                if (!arraySpinner.contains("if Statement")) {
 //                                                    arraySpinner.add("if Statement");
 //                                                }
+                                                if (currentChallengeNum == 4) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 5;
+                                                    challengeComplete = true;
+                                                }
 
-                                            } else if (item.getValue().startsWith("for")) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, true, false, false);
-//                                            stringBuilder.append("Good Job! You found a for loop!\n");
+                                            } else if (item.getValue().startsWith("for") || (item.getValue().startsWith("while"))) {
+                                                graphic = new OcrGraphic(graphicOverlay, item, false, true, false, false);
 //                                                if (!arraySpinner.contains("for Loop")) {
 //                                                    arraySpinner.add("for Loop");
 //                                                }
+                                                if (currentChallengeNum == 5 && (item.getValue().startsWith("for"))) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 6;
+                                                    challengeComplete = true;
+                                                } else if (currentChallengeNum == 6 && (item.getValue().startsWith("while"))) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 7;
+                                                    challengeComplete = true;
+                                                }
 
+                                            } else if (item.getValue().startsWith("switch")) {
+                                                graphic = new OcrGraphic(graphicOverlay, item, true, false, false, false);
+
+                                                if (currentChallengeNum == 7) {
+                                                    currentChallengeNum++;
+//                                                    currentChallengeNum = 8;
+                                                    challengeComplete = true;
+                                                }
                                             }
 
                                             Handler handler = new Handler();
@@ -243,16 +283,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 String number = data.getStringExtra("challenge_no");
-                currentChallenge = Integer.parseInt(number);
-                Log.d("PICKING UP ON NUMBER ", currentChallenge+"");
+                currentChallengeNum = Integer.parseInt(number);
+                Log.d("PICKING UP ON NUMBER ", currentChallengeNum + "");
+                challengeComplete = false;
+                button.setEnabled(true);
+                textView.setText("");
             }
         }
     }
-
 
 
 }
