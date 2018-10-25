@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +17,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -41,14 +43,16 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinner;
     ArrayAdapter<String> adapter;
     ArrayList<String> arraySpinner = new ArrayList<>();
+    ProgressBar progressBar;
     ;
 
-    Button button;
+    Button captureButton;
     boolean screenCapture = false;
 
     int currentChallengeNum = 1;
     boolean challengeComplete = false;
 
+    CountDownTimer countDownTimer;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -79,19 +83,18 @@ public class MainActivity extends AppCompatActivity {
         cameraView = (SurfaceView) findViewById(R.id.surface_view);
         textView = (TextView) findViewById(R.id.text_view);
         crossHairBox = (View) findViewById(R.id.crossHairBox);
-        button = (Button) findViewById(R.id.capture);
-        Button challengeBtn = (Button) findViewById(R.id.challengebtn);
+        captureButton = (Button) findViewById(R.id.capture);
+        final Button challengeBtn = (Button) findViewById(R.id.challengebtn);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+
 
         graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        Log.d("MainActivity", "testing...");
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
@@ -131,15 +134,39 @@ public class MainActivity extends AppCompatActivity {
                     cameraSource.stop();
                 }
             });
+            cameraView.setFocusable(true);
 
-//            Toast.makeText(getApplicationContext(), "WORKING??", Toast.LENGTH_SHORT);
-//            textRecognizer.setProcessor(new OcrDetectorProcessor(getApplicationContext(), graphicOverlay));
+            progressBar.setProgress(0);
+            countDownTimer = new CountDownTimer(1500,100) {
 
-            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Log.d("Log_tag", "Tick of Progress"+ ((1500-millisUntilFinished)/15));
+                    progressBar.setProgress((int)((1500-millisUntilFinished)/15));
+                    captureButton.setEnabled(false);
+                    challengeBtn.setEnabled(false);
+                }
+
+                @Override
+                public void onFinish() {
+                    progressBar.setProgress(0);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    if(!challengeComplete){
+                        captureButton.setEnabled(true);
+                    }
+                    challengeBtn.setEnabled(true);
+                }
+            };
+
+            captureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //change boolean value
                     screenCapture = true;
+                    progressBar.setVisibility(View.VISIBLE);
+                    if(progressBar.getProgress() == 0){
+                        progressBar.setProgress(0);
+                        countDownTimer.start();
+                    }
                 }
             });
 
@@ -152,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.startActivityForResult(intent, 1);
                 }
             });
+
+
 
 
             textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
@@ -177,7 +206,9 @@ public class MainActivity extends AppCompatActivity {
                                 if (challengeComplete) {
                                     stringBuilder.append("Challenge " + (currentChallengeNum - 1) + " complete!\n" +
                                             "Check Challenges screen for next challenge.");
-                                    button.setEnabled(false);
+                                    captureButton.setEnabled(false);
+                                    progressBar.setProgress(0);
+                                    progressBar.setVisibility(View.INVISIBLE);
                                 }
                                 for (int i = 0; i < items.size(); i++) {
 //                                    stringBuilder.append("0: "+crossHairLocation[0]+"\n"); //0
@@ -281,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -291,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                 currentChallengeNum = Integer.parseInt(number);
                 Log.d("PICKING UP ON NUMBER ", currentChallengeNum + "");
                 challengeComplete = false;
-                button.setEnabled(true);
+                captureButton.setEnabled(true);
                 textView.setText("");
             }
         }

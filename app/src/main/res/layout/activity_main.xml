@@ -22,6 +22,17 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_centerHorizontal="true"
+            android:max="100"
+            android:progress="0"
+            android:theme="@style/blueAccent"
+            android:layout_above="@+id/crossHairBox" />
 
         <View
             android:id="@+id/crossHairBox"
@@ -62,6 +73,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true">
+
+
 
         <com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay
             android:id="@+id/graphicOverlay"
