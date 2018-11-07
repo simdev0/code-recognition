@@ -45,22 +45,25 @@ public class ChallengeActivity extends AppCompatActivity {
         Log.d("number is ", challenge_no);
         currentChallengeTxt.setText("Current Challenge: " + challenge_no);
         final int challengeIndex = Integer.parseInt(challenge_no);
-
         challengeList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, challengeNames) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View row = super.getView(position, convertView, parent);
 
                 if (position + 1 < challengeIndex) {
-                    // do something change color
-                    row.setBackgroundColor(Color.GRAY); // some color
+                    row.setBackgroundColor(Color.GRAY);
                 } else {
-                    // default state
-                    row.setBackgroundColor(Color.WHITE); // default color
+                    row.setBackgroundColor(Color.WHITE);
+                }
+                if(position + 1 == 8 || position + 1 == 9 || position + 1 == 10 || position + 1 == 11){
+                    row.setAlpha(0.2f);
+                }else{
+                    row.setAlpha(1);
                 }
                 return row;
             }
         });
+
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +88,7 @@ public class ChallengeActivity extends AppCompatActivity {
         chalList.add(new Challenge(5, "Identify an iteration block with an incrementing or decrementing condition (for)"));
         chalList.add(new Challenge(6, "Identify an iteration block with just a condition (while)"));
         chalList.add(new Challenge(7, "Identify a switch-case statement"));
-        chalList.add(new Challenge(8, "Identify a selection statement with both conditions"));
+        chalList.add(new Challenge(8, "Identify a selection statement with both conditions (else)"));
         chalList.add(new Challenge(9, "Identify a declaration of a new class"));
         chalList.add(new Challenge(10, "Identify a getter method"));
         chalList.add(new Challenge(11, "Identify a setter method"));

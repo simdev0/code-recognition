@@ -1,6 +1,7 @@
 package com.simdev.project.textrecognition3;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     int currentChallengeNum = 1;
     boolean challengeComplete = false;
+
+    boolean dialogShown = false;
 
     CountDownTimer countDownTimer;
 
@@ -203,23 +207,42 @@ public class MainActivity extends AppCompatActivity {
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
 
                                 StringBuilder stringBuilder = new StringBuilder();
-                                if (challengeComplete) {
-                                    stringBuilder.append("Challenge " + (currentChallengeNum - 1) + " complete!\n" +
-                                            "Check Challenges screen for next challenge.");
+                                if (challengeComplete && !dialogShown) {
+//                                    stringBuilder.append("Challenge " + (currentChallengeNum - 1) + " complete!\n" +
+//                                            "Check Challenges screen for next challenge.");
                                     captureButton.setEnabled(false);
                                     progressBar.setProgress(0);
                                     progressBar.setVisibility(View.INVISIBLE);
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    
+                                    if(currentChallengeNum != 8){
+                                        builder.setMessage("Check Challenges screen for next challenge.")
+                                                .setTitle("Challenge " + (currentChallengeNum - 1) + " complete!");
+                                    }else{
+                                        builder.setMessage("Congratulation! All implemented challenges completed." +
+                                                " Await application update for more challenges to come...");
+                                    }
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Intent intent = new Intent(MainActivity.this, ChallengeActivity.class);
+                                            intent.putExtra("CHALLENGE_NO", currentChallengeNum + "");
+                                            MainActivity.this.startActivityForResult(intent, 1);
+                                        }
+                                    });
+
+                                    AlertDialog dialog = builder.create();
+
+                                    dialog.show();
+                                    dialogShown = true;
+//                                    challengeComplete =false;
                                 }
                                 for (int i = 0; i < items.size(); i++) {
-//                                    stringBuilder.append("0: "+crossHairLocation[0]+"\n"); //0
-//                                    stringBuilder.append("1: "+crossHairLocation[1]+"\n"); //471 LANDSCAPE - 891 PORTRAIT
 
                                     TextBlock item = items.valueAt(i);
 
                                     if (item != null && item.getValue() != null && screenCapture && !challengeComplete) {
 
-                                        //will need to change value to something uniform across all devices
-                                        //e.g. subtract size of cross hair box
                                         if (item.getBoundingBox().top >= crossHairLocation[1] - 130 &&
                                                 item.getBoundingBox().bottom <= crossHairLocation[1] + 150) {
                                             OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false,false, false, false);
@@ -239,15 +262,12 @@ public class MainActivity extends AppCompatActivity {
 
                                                 if (currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 2;
                                                     challengeComplete = true;
                                                 } else if (currentChallengeNum == 2 && (stringFound || charFound)) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 3;
                                                     challengeComplete = true;
                                                 } else if (currentChallengeNum == 3 && (booleanFound)) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 4;
                                                     challengeComplete = true;
                                                 }
 
@@ -258,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
 //                                                }
                                                 if (currentChallengeNum == 4) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 5;
                                                     challengeComplete = true;
                                                 }
 
@@ -269,11 +288,9 @@ public class MainActivity extends AppCompatActivity {
 //                                                }
                                                 if (currentChallengeNum == 5 && (item.getValue().startsWith("for"))) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 6;
                                                     challengeComplete = true;
                                                 } else if (currentChallengeNum == 6 && (item.getValue().startsWith("while"))) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 7;
                                                     challengeComplete = true;
                                                 }
 
@@ -282,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
 
                                                 if (currentChallengeNum == 7) {
                                                     currentChallengeNum++;
-//                                                    currentChallengeNum = 8;
                                                     challengeComplete = true;
                                                 }
                                             }
@@ -291,7 +307,6 @@ public class MainActivity extends AppCompatActivity {
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    //write your code here to be executed after 1 second
                                                     screenCapture = false;
                                                 }
                                             }, 1500);
@@ -325,6 +340,7 @@ public class MainActivity extends AppCompatActivity {
                 challengeComplete = false;
                 captureButton.setEnabled(true);
                 textView.setText("");
+                dialogShown = false;
             }
         }
     }
