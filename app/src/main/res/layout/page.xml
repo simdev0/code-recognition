@@ -9,6 +9,7 @@
         android:id="@+id/info1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars = "vertical"
         android:padding="10dp"
         android:textSize="18dp"
         android:textColor="@color/black"/>

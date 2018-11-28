@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.google.android.gms.samples.vision.ocrreader.OcrGraphic;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
@@ -102,21 +104,52 @@ public class MainActivity extends AppCompatActivity {
 
 
         pagerAdapter = new MainPagerAdapter();
-        pager = (ViewPager) findViewById (R.id.view_pager);
-        pager.setAdapter (pagerAdapter);
+        pager = (ViewPager) findViewById(R.id.view_pager);
+        pager.setAdapter(pagerAdapter);
 
         // Create an initial view to display; must be a subclass of FrameLayout.
         Activity context = this;
         LayoutInflater inflater = context.getLayoutInflater();
-        FrameLayout v0 = (FrameLayout) inflater.inflate (R.layout.page, null);
-        View v1 =  new View(getApplicationContext());
-        pagerAdapter.addView (v0);
-        pagerAdapter.addView (v1);
-        pager.setCurrentItem (pagerAdapter.getItemPosition (v1), true);
+        FrameLayout v0 = (FrameLayout) inflater.inflate(R.layout.page, null);
+        View v1 = new View(getApplicationContext());
+        pagerAdapter.addView(v0);
+        pagerAdapter.addView(v1);
+        pager.setCurrentItem(pagerAdapter.getItemPosition(v1), true);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0){
+                    captureButton.setVisibility(View.INVISIBLE);
+                    tutorialButton.setVisibility(View.INVISIBLE);
+                    challengeBtn.setVisibility(View.INVISIBLE);
+                    finishButton.setVisibility(View.INVISIBLE);
+                }else if(position == 1 && !tutorial){
+                    captureButton.setVisibility(View.VISIBLE);
+                    tutorialButton.setVisibility(View.VISIBLE);
+                    finishButton.setVisibility(View.INVISIBLE);
+                    challengeBtn.setVisibility(View.INVISIBLE);
+                }else if(position == 1 && tutorial){
+                    captureButton.setVisibility(View.VISIBLE);
+                    tutorialButton.setVisibility(View.INVISIBLE);
+                    finishButton.setVisibility(View.VISIBLE);
+                    challengeBtn.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         info1 = (TextView) v0.findViewById(R.id.info1);
         info1.setText("This screen shows components of the code you scan. Click capture to identify different items and they will show up here.");
-
+        info1.setMovementMethod(new ScrollingMovementMethod());
         pagerAdapter.notifyDataSetChanged();
 
         //once picture captured, move to first page and show summary of items
@@ -124,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.INVISIBLE);
 
-        if(!tutorial){
+        if (!tutorial) {
             crossHair.setVisibility(View.INVISIBLE);
             crossHairBox.setVisibility(View.INVISIBLE);
             challengeBtn.setVisibility(View.INVISIBLE);
@@ -172,11 +205,11 @@ public class MainActivity extends AppCompatActivity {
             cameraView.setFocusable(true);
 
             progressBar.setProgress(0);
-            countDownTimer = new CountDownTimer(1500,100) {
+            countDownTimer = new CountDownTimer(1500, 100) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    progressBar.setProgress((int)((1500-millisUntilFinished)/15));
+                    progressBar.setProgress((int) ((1500 - millisUntilFinished) / 15));
                     captureButton.setEnabled(false);
                     challengeBtn.setEnabled(false);
                 }
@@ -185,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish() {
                     progressBar.setProgress(0);
                     progressBar.setVisibility(View.INVISIBLE);
-                    if(!challengeComplete){
+                    if (!challengeComplete) {
                         captureButton.setEnabled(true);
                     }
                     challengeBtn.setEnabled(true);
@@ -197,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     screenCapture = true;
                     progressBar.setVisibility(View.VISIBLE);
-                    if(progressBar.getProgress() == 0){
+                    if (progressBar.getProgress() == 0) {
                         progressBar.setProgress(0);
                         countDownTimer.start();
                     }
@@ -248,8 +281,6 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-
-
             textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
                 @Override
                 public void release() {
@@ -268,6 +299,11 @@ public class MainActivity extends AppCompatActivity {
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
 
                                 final StringBuilder stringBuilder = new StringBuilder();
+                                int variableCount = 0;
+                                int ifCount = 0;
+                                int forCount = 0;
+                                int whileCount = 0;
+                                int switchCount = 0;
                                 if (challengeComplete && !dialogShown) {
                                     captureButton.setEnabled(false);
                                     progressBar.setProgress(0);
@@ -275,10 +311,10 @@ public class MainActivity extends AppCompatActivity {
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                                    if(currentChallengeNum != 8){
+                                    if (currentChallengeNum != 8) {
                                         builder.setMessage("Check Challenges screen for next challenge.")
                                                 .setTitle("Challenge " + (currentChallengeNum - 1) + " complete!");
-                                    }else{
+                                    } else {
                                         builder.setMessage("Congratulation! All implemented challenges completed." +
                                                 " Await application update for more challenges to come...");
                                     }
@@ -296,83 +332,103 @@ public class MainActivity extends AppCompatActivity {
                                     dialogShown = true;
                                 }
                                 for (int i = 0; i < items.size(); i++) {
-
                                     TextBlock item = items.valueAt(i);
 
-                                    if (item != null && item.getValue() != null && screenCapture && !challengeComplete) {
+                                    for (Text line : item.getComponents()) {
 
-                                        if ((item.getBoundingBox().top >= crossHairLocation[1] - 130 &&
-                                                item.getBoundingBox().bottom <= crossHairLocation[1] + 150) || !tutorial)  {
-                                            OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false,false, false, false);
+                                        if (line != null && line.getValue() != null && screenCapture && !challengeComplete) {
 
-                                            boolean integerFound = item.getValue().startsWith("int");
-                                            boolean doubleFound = item.getValue().startsWith("double");
-                                            boolean floatFound = item.getValue().startsWith("float");
-                                            boolean stringFound = item.getValue().startsWith("String");
-                                            boolean charFound = item.getValue().startsWith("char");
-                                            boolean booleanFound = item.getValue().startsWith("boolean");
+                                            if ((line.getBoundingBox().top >= crossHairLocation[1] - 130 &&
+                                                    line.getBoundingBox().bottom <= crossHairLocation[1] + 150) || !tutorial) {
+                                                OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false, false, false, false);
 
-                                            if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, false, false, false, true);
+                                                boolean integerFound = line.getValue().startsWith("int");
+                                                boolean doubleFound = line.getValue().startsWith("double");
+                                                boolean floatFound = line.getValue().startsWith("float");
+                                                boolean stringFound = line.getValue().startsWith("String");
+                                                boolean charFound = line.getValue().startsWith("char");
+                                                boolean booleanFound = line.getValue().startsWith("boolean");
 
-                                                if(integerFound){
-                                                    String[] sp = item.getValue().split(" ");
-                                                    stringBuilder.append("Integer Found! - Scanned line:" +
-                                                            "\n - variable type: " + sp[0] + "\n - variable name: " + sp[sp.length-1]+"\n");
+                                                boolean ifFound = line.getValue().startsWith("if");
+                                                boolean forFound = line.getValue().startsWith("for");
+                                                boolean whileFound = line.getValue().startsWith("while");
+                                                boolean switchFound = line.getValue().startsWith("switch");
+
+
+                                                if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
+                                                    graphic = new OcrGraphic(graphicOverlay, line, false, false, false, true);
+
+                                                    String[] sp = line.getValue().split(" ");
+                                                    if(sp.length >= 2) {
+                                                        stringBuilder.append(" - variable type: " + sp[0] + ", variable name: " + sp[1] + "\n");
+                                                        variableCount++;
+                                                    }
+
+                                                    if ((currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    } else if ((currentChallengeNum == 2 && (stringFound || charFound)) && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    } else if ((currentChallengeNum == 3 && (booleanFound)) && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    }
+
+                                                } else if (ifFound) {
+                                                    graphic = new OcrGraphic(graphicOverlay, line, false, false, true, false);
+                                                    ifCount++;
+                                                    if (currentChallengeNum == 4 && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    }
+
+                                                } else if (forFound || whileFound) {
+                                                    graphic = new OcrGraphic(graphicOverlay, line, false, true, false, false);
+
+                                                    if(forFound){
+                                                        forCount++;
+                                                    }else if(whileFound){
+                                                        whileCount++;
+                                                    }
+
+                                                    if ((currentChallengeNum == 5 && (forFound)) && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    } else if ((currentChallengeNum == 6 && (whileFound)) && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    }
+
+                                                } else if (switchFound) {
+                                                    graphic = new OcrGraphic(graphicOverlay, line, true, false, false, false);
+                                                    switchCount++;
+                                                    if (currentChallengeNum == 7 && tutorial) {
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    }
                                                 }
 
-                                                if ((currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                } else if ((currentChallengeNum == 2 && (stringFound || charFound)) && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                } else if ((currentChallengeNum == 3 && (booleanFound)) && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                }
-
-                                            } else if (item.getValue().startsWith("if")) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, false, false, true, false);
-
-                                                if (currentChallengeNum == 4 && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                }
-
-                                            } else if (item.getValue().startsWith("for") || (item.getValue().startsWith("while"))) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, false, true, false, false);
-
-                                                if ((currentChallengeNum == 5 && (item.getValue().startsWith("for"))) && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                } else if ((currentChallengeNum == 6 && (item.getValue().startsWith("while"))) && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                }
-
-                                            } else if (item.getValue().startsWith("switch")) {
-                                                graphic = new OcrGraphic(graphicOverlay, item, true, false, false, false);
-
-                                                if (currentChallengeNum == 7 && tutorial) {
-                                                    currentChallengeNum++;
-                                                    challengeComplete = true;
-                                                }
+                                                Handler handler = new Handler();
+                                                handler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        screenCapture = false;
+                                                        info1.setText(stringBuilder.toString());
+                                                    }
+                                                }, 1500);
+                                                //1.5 sec to find item
+                                                graphicOverlay.add(graphic);
                                             }
-
-                                            Handler handler = new Handler();
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    screenCapture = false;
-                                                    info1.setText(stringBuilder.toString());
-                                                }
-                                            }, 1500);
-                                            //1.5 sec to find item
-                                            graphicOverlay.add(graphic);
                                         }
                                     }
                                 }
+                                stringBuilder.insert(0,variableCount + " Variable Declarations Found:\n");
+                                stringBuilder.append("\n" + ifCount + " If Conditions Found:\n");
+                                stringBuilder.append(forCount + " For Loops Found:\n");
+                                stringBuilder.append(whileCount + " While Loops Found:\n");
+                                stringBuilder.append(switchCount + " Switch Statements Found:\n");
+
                             }
                         });
                     }
@@ -381,7 +437,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
 
     @Override
@@ -412,4 +467,4 @@ public class MainActivity extends AppCompatActivity {
 //int thisIsATest;
 //int seventeen = 17;
 //int another=231;
-//
+

@@ -22,7 +22,6 @@ import android.graphics.RectF;
 
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.text.Text;
-import com.google.android.gms.vision.text.TextBlock;
 
 import java.util.List;
 
@@ -43,14 +42,14 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
 
     private static Paint rectPaint;
     private static Paint textPaint;
-    private TextBlock text;
+    private Text text;
     public boolean SwitchCodeFound = true;
     public boolean ForCodeFound = true;
     public boolean IfCodeFound = true;
     public boolean VariableCodeFound = true;
 
 
-    public OcrGraphic(GraphicOverlay overlay, TextBlock text, boolean switchCodeFound, boolean forCodeFound, boolean ifCodeFound, boolean variableCodeFound) {
+    public OcrGraphic(GraphicOverlay overlay, Text text, boolean switchCodeFound, boolean forCodeFound, boolean ifCodeFound, boolean variableCodeFound) {
         super(overlay);
 
         if (text != null) {
@@ -86,7 +85,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         this.id = id;
     }
 
-    public TextBlock getTextBlock() {
+    public Text getTextBlock() {
         return text;
     }
 
