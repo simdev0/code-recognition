@@ -20,11 +20,9 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.samples.vision.ocrreader.OcrGraphic;
@@ -35,7 +33,6 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,11 +44,7 @@ public class MainActivity extends AppCompatActivity {
     CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
 
-    Spinner spinner;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> arraySpinner = new ArrayList<>();
     ProgressBar progressBar;
-    ;
 
     Button captureButton;
     Button tutorialButton;
@@ -107,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
-        info1 = (TextView) findViewById(R.id.info1);
-//        info1.setText("TESTING");
-//
 
         pagerAdapter = new MainPagerAdapter();
         pager = (ViewPager) findViewById (R.id.view_pager);
@@ -124,9 +114,12 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter.addView (v1);
         pager.setCurrentItem (pagerAdapter.getItemPosition (v1), true);
 
+        info1 = (TextView) v0.findViewById(R.id.info1);
+        info1.setText("This screen shows components of the code you scan. Click capture to identify different items and they will show up here.");
+
         pagerAdapter.notifyDataSetChanged();
 
-//once picture captured, move to first page and show summary of items
+        //once picture captured, move to first page and show summary of items
         //ISSUE:: setting text on page.xml (info1)
 
         progressBar.setVisibility(View.INVISIBLE);
@@ -137,11 +130,6 @@ public class MainActivity extends AppCompatActivity {
             challengeBtn.setVisibility(View.INVISIBLE);
             finishButton.setVisibility(View.INVISIBLE);
         }
-
-        spinner = (Spinner) findViewById(R.id.spinner);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
@@ -188,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    Log.d("Log_tag", "Tick of Progress"+ ((1500-millisUntilFinished)/15));
                     progressBar.setProgress((int)((1500-millisUntilFinished)/15));
                     captureButton.setEnabled(false);
                     challengeBtn.setEnabled(false);
@@ -272,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void receiveDetections(Detector.Detections<TextBlock> detections) {
                     graphicOverlay.clear();
-                    arraySpinner.clear();
                     final SparseArray<TextBlock> items = detections.getDetectedItems();
                     if (items.size() != 0) {
                         textView.post(new Runnable() {
@@ -281,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                                 int crossHairLocation[] = new int[2];
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
 
-//                                StringBuilder stringBuilder = new StringBuilder();
+                                final StringBuilder stringBuilder = new StringBuilder();
                                 if (challengeComplete && !dialogShown) {
                                     captureButton.setEnabled(false);
                                     progressBar.setProgress(0);
@@ -328,11 +314,11 @@ public class MainActivity extends AppCompatActivity {
 
                                             if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
                                                 graphic = new OcrGraphic(graphicOverlay, item, false, false, false, true);
-//                                                if (!arraySpinner.contains("Variable Declaration")) {
-//                                                    arraySpinner.add("Variable Declaration");
-//                                                }
+
                                                 if(integerFound){
-//                                                    info1.setText("Integer Found! - Scanned line: " + item.getValue());
+                                                    String[] sp = item.getValue().split(" ");
+                                                    stringBuilder.append("Integer Found! - Scanned line:" +
+                                                            "\n - variable type: " + sp[0] + "\n - variable name: " + sp[sp.length-1]+"\n");
                                                 }
 
                                                 if ((currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) && tutorial) {
@@ -348,9 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             } else if (item.getValue().startsWith("if")) {
                                                 graphic = new OcrGraphic(graphicOverlay, item, false, false, true, false);
-//                                                if (!arraySpinner.contains("if Statement")) {
-//                                                    arraySpinner.add("if Statement");
-//                                                }
+
                                                 if (currentChallengeNum == 4 && tutorial) {
                                                     currentChallengeNum++;
                                                     challengeComplete = true;
@@ -358,9 +342,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             } else if (item.getValue().startsWith("for") || (item.getValue().startsWith("while"))) {
                                                 graphic = new OcrGraphic(graphicOverlay, item, false, true, false, false);
-//                                                if (!arraySpinner.contains("for Loop")) {
-//                                                    arraySpinner.add("for Loop");
-//                                                }
+
                                                 if ((currentChallengeNum == 5 && (item.getValue().startsWith("for"))) && tutorial) {
                                                     currentChallengeNum++;
                                                     challengeComplete = true;
@@ -383,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
                                                 @Override
                                                 public void run() {
                                                     screenCapture = false;
+                                                    info1.setText(stringBuilder.toString());
                                                 }
                                             }, 1500);
                                             //1.5 sec to find item
@@ -390,8 +373,6 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                                 }
-                                adapter.notifyDataSetChanged();
-//                                textView.setText(stringBuilder.toString());
                             }
                         });
                     }
@@ -424,8 +405,11 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
-// CURRENT BUG: selecting item in spinner is difficult since the adapter continuously set
-// FOR SERIOUS GAMES: button to different screen to show count for variable dec, for loop, if statement and challenge
-// -- compare item with array of foundCode. if the item isn't in that array, count++ and add item to array,
+// item.getValue shows the block, need to split up into lines
 // if code found, make DING noise and either surround code with box or show a tick
-// to avoid infinite count incrementation, have an array for each type and compare the text to whatever's in the array
+
+//
+//int thisIsATest;
+//int seventeen = 17;
+//int another=231;
+//

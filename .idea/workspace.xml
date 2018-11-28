@@ -15,11 +15,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3761b33d-9c9d-4d5a-b1ba-7a5c8245d927" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainPagerAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/default_dot.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/selected_dot.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/tab_selector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/page.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.6/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/javaCompile/classAnalysis.bin" afterDir="false" />
@@ -30,8 +25,7 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/page.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -59,23 +53,37 @@
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="activity_main.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="106" column="39" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
-            </state>
-          </provider>
           <provider editor-type-id="android-designer2">
             <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="335">
+              <caret line="27" column="41" selection-start-line="27" selection-start-column="41" selection-end-line="27" selection-end-column="41" />
+            </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="129" column="50" selection-start-line="129" selection-start-column="50" selection-end-line="129" selection-end-column="50" />
+            <state relative-caret-position="202">
+              <caret line="300" lean-forward="true" selection-start-line="300" selection-end-line="300" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#7958#8371#0" expanded="true" />
+                <element signature="e#8370#8371#0" expanded="true" />
+                <element signature="e#8422#9270#0" expanded="true" />
+                <element signature="e#9269#9270#0" expanded="true" />
+                <element signature="e#9318#9805#0" expanded="true" />
+                <element signature="e#9804#9805#0" expanded="true" />
+                <element signature="e#9854#10231#0" expanded="true" />
+                <element signature="e#10230#10231#0" expanded="true" />
+                <element signature="e#10941#18844#0" expanded="true" />
+                <element signature="e#12180#12709#0" expanded="true" />
+                <element signature="e#12708#12709#0" expanded="true" />
+                <element signature="e#18394#18707#0" expanded="true" />
+                <element signature="e#18706#18707#0" expanded="true" />
+                <element signature="e#18843#18844#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -83,25 +91,21 @@
       </file>
       <file leaf-file-name="page.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/page.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="12" column="42" selection-start-line="12" selection-start-column="42" selection-end-line="12" selection-end-column="42" />
-            </state>
-          </provider>
           <provider editor-type-id="android-designer2">
             <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="242">
+              <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+            </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="MainPagerAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainPagerAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22">
+            <state relative-caret-position="176">
               <caret line="14" selection-start-line="14" selection-end-line="14" />
-              <folding>
-                <element signature="e#1287#1288#0" expanded="true" />
-                <element signature="e#1335#1336#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -121,7 +125,7 @@
       <file leaf-file-name="GraphicOverlay.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/android/gms/samples/vision/ocrreader/ui/camera/GraphicOverlay.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22">
+            <state relative-caret-position="2750">
               <caret line="160" column="18" selection-start-line="160" selection-start-column="18" selection-end-line="160" selection-end-column="18" />
             </state>
           </provider>
@@ -2441,10 +2445,10 @@
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/selected_dot.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/default_dot.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/tab_selector.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/page.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainPagerAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/page.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainActivity.java" />
       </list>
     </option>
@@ -2459,8 +2463,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -2514,6 +2516,8 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2812,6 +2816,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="Android Profiler" order="7" sideWeight="0.49946696" weight="0.32897604" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32897604" />
@@ -2828,8 +2833,9 @@
       <window_info id="Captures" order="2" weight="0.25" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" weight="0.16204691" />
-      <window_info anchor="bottom" id="Build" order="8" sideWeight="0.5517058" weight="0.32897604" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16204691" />
+      <window_info active="true" anchor="bottom" id="Build" order="8" sideWeight="0.5517058" visible="true" weight="0.32897604" />
+      <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Gradle" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Device File Explorer" order="3" side_tool="true" />
@@ -2845,7 +2851,6 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Gradle Console" order="7" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
     </layout>
     <layout-to-restore>
       <window_info anchor="bottom" id="Build" order="14" sideWeight="0.5517058" weight="0.32897604" />
@@ -2865,7 +2870,6 @@
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50159913" side_tool="true" weight="0.32897604" />
       <window_info anchor="right" id="Preview" order="4" weight="0.195629" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Device File Explorer" order="5" side_tool="true" />
       <window_info anchor="right" id="Assistant" order="9" weight="0.32995737" />
       <window_info anchor="bottom" id="Logcat" order="10" weight="0.32897604" />
@@ -2880,6 +2884,7 @@
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" />
       <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39978212" />
     </layout-to-restore>
   </component>
@@ -2919,6 +2924,20 @@
           <caret line="113" column="70" selection-start-line="113" selection-start-column="70" selection-end-line="113" selection-end-column="70" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7958#8371#0" expanded="true" />
+            <element signature="e#8370#8371#0" expanded="true" />
+            <element signature="e#8422#9270#0" expanded="true" />
+            <element signature="e#9269#9270#0" expanded="true" />
+            <element signature="e#9318#9805#0" expanded="true" />
+            <element signature="e#9804#9805#0" expanded="true" />
+            <element signature="e#9854#10231#0" expanded="true" />
+            <element signature="e#10230#10231#0" expanded="true" />
+            <element signature="e#10941#18844#0" expanded="true" />
+            <element signature="e#12180#12709#0" expanded="true" />
+            <element signature="e#12708#12709#0" expanded="true" />
+            <element signature="e#18394#18707#0" expanded="true" />
+            <element signature="e#18706#18707#0" expanded="true" />
+            <element signature="e#18843#18844#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2960,6 +2979,20 @@
           <caret line="113" column="70" lean-forward="true" selection-start-line="113" selection-start-column="70" selection-end-line="113" selection-end-column="70" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7958#8371#0" expanded="true" />
+            <element signature="e#8370#8371#0" expanded="true" />
+            <element signature="e#8422#9270#0" expanded="true" />
+            <element signature="e#9269#9270#0" expanded="true" />
+            <element signature="e#9318#9805#0" expanded="true" />
+            <element signature="e#9804#9805#0" expanded="true" />
+            <element signature="e#9854#10231#0" expanded="true" />
+            <element signature="e#10230#10231#0" expanded="true" />
+            <element signature="e#10941#18844#0" expanded="true" />
+            <element signature="e#12180#12709#0" expanded="true" />
+            <element signature="e#12708#12709#0" expanded="true" />
+            <element signature="e#18394#18707#0" expanded="true" />
+            <element signature="e#18706#18707#0" expanded="true" />
+            <element signature="e#18843#18844#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3001,6 +3034,20 @@
           <caret line="25" column="30" lean-forward="true" selection-start-line="25" selection-start-column="30" selection-end-line="25" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7958#8371#0" expanded="true" />
+            <element signature="e#8370#8371#0" expanded="true" />
+            <element signature="e#8422#9270#0" expanded="true" />
+            <element signature="e#9269#9270#0" expanded="true" />
+            <element signature="e#9318#9805#0" expanded="true" />
+            <element signature="e#9804#9805#0" expanded="true" />
+            <element signature="e#9854#10231#0" expanded="true" />
+            <element signature="e#10230#10231#0" expanded="true" />
+            <element signature="e#10941#18844#0" expanded="true" />
+            <element signature="e#12180#12709#0" expanded="true" />
+            <element signature="e#12708#12709#0" expanded="true" />
+            <element signature="e#18394#18707#0" expanded="true" />
+            <element signature="e#18706#18707#0" expanded="true" />
+            <element signature="e#18843#18844#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3042,6 +3089,20 @@
           <caret line="58" selection-start-line="58" selection-end-line="58" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7958#8371#0" expanded="true" />
+            <element signature="e#8370#8371#0" expanded="true" />
+            <element signature="e#8422#9270#0" expanded="true" />
+            <element signature="e#9269#9270#0" expanded="true" />
+            <element signature="e#9318#9805#0" expanded="true" />
+            <element signature="e#9804#9805#0" expanded="true" />
+            <element signature="e#9854#10231#0" expanded="true" />
+            <element signature="e#10230#10231#0" expanded="true" />
+            <element signature="e#10941#18844#0" expanded="true" />
+            <element signature="e#12180#12709#0" expanded="true" />
+            <element signature="e#12708#12709#0" expanded="true" />
+            <element signature="e#18394#18707#0" expanded="true" />
+            <element signature="e#18706#18707#0" expanded="true" />
+            <element signature="e#18843#18844#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3083,6 +3144,20 @@
           <caret line="104" column="25" lean-forward="true" selection-start-line="104" selection-start-column="25" selection-end-line="104" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7958#8371#0" expanded="true" />
+            <element signature="e#8370#8371#0" expanded="true" />
+            <element signature="e#8422#9270#0" expanded="true" />
+            <element signature="e#9269#9270#0" expanded="true" />
+            <element signature="e#9318#9805#0" expanded="true" />
+            <element signature="e#9804#9805#0" expanded="true" />
+            <element signature="e#9854#10231#0" expanded="true" />
+            <element signature="e#10230#10231#0" expanded="true" />
+            <element signature="e#10941#18844#0" expanded="true" />
+            <element signature="e#12180#12709#0" expanded="true" />
+            <element signature="e#12708#12709#0" expanded="true" />
+            <element signature="e#18394#18707#0" expanded="true" />
+            <element signature="e#18706#18707#0" expanded="true" />
+            <element signature="e#18843#18844#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3232,7 +3307,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/android/gms/samples/vision/ocrreader/ui/camera/GraphicOverlay.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
+        <state relative-caret-position="2750">
           <caret line="160" column="18" selection-start-line="160" selection-start-column="18" selection-end-line="160" selection-end-column="18" />
         </state>
       </provider>
@@ -3257,16 +3332,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="106" column="39" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -3274,33 +3339,53 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainPagerAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/page.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="12" column="42" selection-start-line="12" selection-start-column="42" selection-end-line="12" selection-end-column="42" />
+        <state relative-caret-position="242">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
         </state>
       </provider>
       <provider editor-type-id="android-designer2">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainPagerAdapter.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="e#1287#1288#0" expanded="true" />
-            <element signature="e#1335#1336#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="335">
+          <caret line="27" column="41" selection-start-line="27" selection-start-column="41" selection-end-line="27" selection-end-column="41" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/simdev/project/textrecognition3/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="129" column="50" selection-start-line="129" selection-start-column="50" selection-end-line="129" selection-end-column="50" />
+        <state relative-caret-position="202">
+          <caret line="300" lean-forward="true" selection-start-line="300" selection-end-line="300" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7958#8371#0" expanded="true" />
+            <element signature="e#8370#8371#0" expanded="true" />
+            <element signature="e#8422#9270#0" expanded="true" />
+            <element signature="e#9269#9270#0" expanded="true" />
+            <element signature="e#9318#9805#0" expanded="true" />
+            <element signature="e#9804#9805#0" expanded="true" />
+            <element signature="e#9854#10231#0" expanded="true" />
+            <element signature="e#10230#10231#0" expanded="true" />
+            <element signature="e#10941#18844#0" expanded="true" />
+            <element signature="e#12180#12709#0" expanded="true" />
+            <element signature="e#12708#12709#0" expanded="true" />
+            <element signature="e#18394#18707#0" expanded="true" />
+            <element signature="e#18706#18707#0" expanded="true" />
+            <element signature="e#18843#18844#0" expanded="true" />
           </folding>
         </state>
       </provider>
