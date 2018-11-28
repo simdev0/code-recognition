@@ -6,5 +6,7 @@
     <color name="colorProgress">#56FF45</color>
     <color name="colorCross">#000000</color>
     <color name="colorRect">#DFDFDF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
 </resources>

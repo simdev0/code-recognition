@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,39 +23,41 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_above="@+id/crossHairBox"
             android:layout_centerHorizontal="true"
+            android:layout_weight="1"
             android:max="100"
             android:progress="0"
-            android:theme="@style/blueAccent"
-            android:layout_above="@+id/crossHairBox" />
+            android:theme="@style/blueAccent" />
 
         <View
             android:id="@+id/crossHairBox"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/crosshair_box"/>
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/crosshair_box" />
+
         <View
             android:id="@+id/crossHair"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:background="@drawable/crosshair"/>
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/crosshair" />
 
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
             android:background="#FFFFFF" />
 
         <Button
@@ -64,6 +67,7 @@
             android:layout_alignParentRight="true"
             android:layout_weight="1"
             android:text="Capture" />
+
         <Button
             android:id="@+id/challengebtn"
             android:layout_width="wrap_content"
@@ -73,6 +77,38 @@
             android:layout_weight="1"
             android:text="Challenges" />
 
+        <Button
+            android:id="@+id/tutorialBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:text="Tutorial" />
+
+        <Button
+            android:id="@+id/finishTutorialBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:text="End Tutorial" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.TabLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="3dp" />
+        </android.support.v4.view.ViewPager>
+
+
     </RelativeLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -80,7 +116,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true">
-
 
 
         <com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay
