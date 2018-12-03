@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     final int RequestCameraPermissionID = 1001;
 
     ProgressBar progressBar;
+    ProgressBar infoProgress;
 
     Button captureButton;
     Button tutorialButton;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     boolean challengeComplete = false;
     boolean dialogShown = false;
     boolean tutorial = false;
+    boolean appStart = true;
+    boolean switchPage = false;
 
     TextView info1;
     private ViewPager pager = null;
@@ -128,16 +131,19 @@ public class MainActivity extends AppCompatActivity {
                     tutorialButton.setVisibility(View.INVISIBLE);
                     challengeBtn.setVisibility(View.INVISIBLE);
                     finishButton.setVisibility(View.INVISIBLE);
+                    graphicOverlay.setVisibility(View.INVISIBLE);
                 } else if (position == 1 && !tutorial) {
                     captureButton.setVisibility(View.VISIBLE);
                     tutorialButton.setVisibility(View.VISIBLE);
                     finishButton.setVisibility(View.INVISIBLE);
                     challengeBtn.setVisibility(View.INVISIBLE);
+                    graphicOverlay.setVisibility(View.VISIBLE);
                 } else if (position == 1 && tutorial) {
                     captureButton.setVisibility(View.VISIBLE);
                     tutorialButton.setVisibility(View.INVISIBLE);
                     finishButton.setVisibility(View.VISIBLE);
                     challengeBtn.setVisibility(View.VISIBLE);
+                    graphicOverlay.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -147,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        infoProgress = (ProgressBar) v0.findViewById(R.id.infoProgress);
         info1 = (TextView) v0.findViewById(R.id.info1);
         info1.setText("This screen shows components of the code you scan. Click capture to identify different items and they will show up here.");
         info1.setMovementMethod(new ScrollingMovementMethod());
@@ -156,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         //ISSUE:: setting text on page.xml (info1)
 
         progressBar.setVisibility(View.INVISIBLE);
+        infoProgress.setVisibility(View.INVISIBLE);
 
         if (!tutorial) {
             crossHair.setVisibility(View.INVISIBLE);
@@ -205,11 +213,11 @@ public class MainActivity extends AppCompatActivity {
             cameraView.setFocusable(true);
 
             progressBar.setProgress(0);
-            countDownTimer = new CountDownTimer(1200, 100) {
+            countDownTimer = new CountDownTimer(1500, 100) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    progressBar.setProgress((int) ((1200 - millisUntilFinished) / 12));
+                    progressBar.setProgress((int) ((1500 - millisUntilFinished) / 15));
                     captureButton.setEnabled(false);
                     challengeBtn.setEnabled(false);
                 }
@@ -218,18 +226,27 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish() {
                     progressBar.setProgress(0);
                     progressBar.setVisibility(View.INVISIBLE);
+                    switchPage = true;
+
                     if (!challengeComplete) {
                         captureButton.setEnabled(true);
                     }
                     challengeBtn.setEnabled(true);
+
                 }
             };
+
 
             captureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     screenCapture = true;
+                    appStart = false;
                     progressBar.setVisibility(View.VISIBLE);
+                    info1.setText("");
+                    infoProgress.setVisibility(View.VISIBLE);
+                    infoProgress.setProgress(50);
+
                     if (progressBar.getProgress() == 0) {
                         progressBar.setProgress(0);
                         countDownTimer.start();
@@ -348,22 +365,26 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean stringFound = line.getValue().startsWith("String");
                                                 boolean charFound = line.getValue().startsWith("char");
                                                 boolean booleanFound = line.getValue().startsWith("boolean");
+                                                boolean arrayFound = line.getValue().startsWith("Array");
 
                                                 boolean ifFound = line.getValue().startsWith("if");
                                                 boolean forFound = line.getValue().startsWith("for");
                                                 boolean whileFound = line.getValue().startsWith("while");
-                                                boolean switchFound = line.getValue().startsWith("switch");
+                                                final boolean switchFound = line.getValue().startsWith("switch");
 
                                                 //VARIABLE DECLARATIONS
-                                                if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound) {
+                                                if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound || arrayFound) {
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, false, false, true);
 
                                                     String[] sp = line.getValue().split(" ");
                                                     if (sp.length >= 2) {
+                                                        if (sp[0].contains("Array") && sp[0].length() < 8) {
+                                                            sp[0] = "Array";
+                                                        }
                                                         stringBuilder.append(" - variable type: " + sp[0] + ", variable name: " + sp[1] + "\n");
                                                         variableCount++;
                                                     }
-
+//      ArrayList<String> check= j
                                                     if ((currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) && tutorial) {
                                                         currentChallengeNum++;
                                                         challengeComplete = true;
@@ -389,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, true, false, false);
 
                                                     if (forFound) {
-                                                        Log.d("-----------", line.getValue());
                                                         forCount++;
                                                         if (currentChallengeNum == 5 && tutorial) {
                                                             currentChallengeNum++;
@@ -414,6 +434,7 @@ public class MainActivity extends AppCompatActivity {
                                                         challengeComplete = true;
                                                     }
                                                 }
+                                                graphicOverlay.add(graphic);
 
                                                 Handler handler = new Handler();
                                                 handler.postDelayed(new Runnable() {
@@ -421,37 +442,47 @@ public class MainActivity extends AppCompatActivity {
                                                     public void run() {
                                                         screenCapture = false;
                                                         info1.setText(stringBuilder.toString());
+                                                        if (switchPage) {
+                                                            pager.setCurrentItem(0, true);
+                                                            switchPage = false;
+                                                        }
+
                                                     }
-                                                }, 1200);
-                                                //1.2 sec to find item
-                                                graphicOverlay.add(graphic);
+                                                }, 1500);
+                                                //1.5 sec to find item
                                             }
                                         }
                                     }
                                 }
-                                stringBuilder.insert(0, variableCount + " Variable Declarations Found:\n");
-                                stringBuilder.append("\n" + ifCount + " If Conditions Found:\n");
-                                stringBuilder.append(forCount + " For Loops Found:\n");
-                                stringBuilder.append(whileCount + " While Loops Found:\n");
-                                stringBuilder.append(switchCount + " Switch Statements Found:\n");
+
+                                stringBuilder.insert(0, variableCount + " Variable Declarations Found\n");
+                                stringBuilder.append("\n" + ifCount + " If Conditions Found\n");
+                                stringBuilder.append(forCount + " For Loops Found\n");
+                                stringBuilder.append(whileCount + " While Loops Found\n");
+                                stringBuilder.append(switchCount + " Switch Statements Found\n");
 
                                 stringBuilder.append("\n\nTips: ");
-                                if(ifCount >= 1){
+                                if (ifCount >= 1) {
                                     stringBuilder.append("\n-If conditions are statements that execute only IF the condition is true." +
                                             "The code within the curly brackets {} is what is executed");
                                 }
-                                if(forCount >=1 || whileCount >=1){
+                                if (forCount >= 1 || whileCount >= 1) {
                                     stringBuilder.append("\n-Loops are used to execute a set of statements repeatedly until a particular condition is satisfied.");
                                 }
-                                if(forCount >=1){
+                                if (forCount >= 1) {
                                     stringBuilder.append("\n-For loops are recommended if there is a certain number of times you want the code to execute (either by incrementing or decrementing).");
                                 }
-                                if(whileCount >=1 ){
+                                if (whileCount >= 1) {
                                     stringBuilder.append("\n-While loops are recommended if you don't know how many times the code will execute");
                                 }
-                                if(switchCount >=1){
-                                    stringBuilder.append("\n-This works similar to an else-if statement. It \"switches\" the variable and shows a variety of cases" +
-                                            "and if a specific case is true, the code underneath it is executed.");
+                                if (switchCount >= 1) {
+                                    stringBuilder.append("\n-This works similar to an else-if statement. It \"switches\" the variable and shows a variety of cases." +
+                                            " If a specific case is true, the code underneath it is executed.");
+                                }
+
+                                if (!screenCapture) {
+                                    infoProgress.setProgress(0);
+                                    infoProgress.setVisibility(View.INVISIBLE);
                                 }
 
                             }
@@ -472,7 +503,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String number = data.getStringExtra("challenge_no");
                 currentChallengeNum = Integer.parseInt(number);
-                Log.d("PICKING UP ON NUMBER ", currentChallengeNum + "");
                 challengeComplete = false;
                 captureButton.setEnabled(true);
                 textView.setText("");

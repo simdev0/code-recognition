@@ -13,4 +13,13 @@
         android:padding="10dp"
         android:textSize="18dp"
         android:textColor="@color/black"/>
+
+    <ProgressBar
+        android:id="@+id/infoProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:max="100"
+        android:progress="0"/>
 </FrameLayout>
