@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +26,27 @@ public class ChallengeActivity extends AppCompatActivity {
 
         Button backBtn = (Button) findViewById(R.id.backBtn);
         TextView currentChallengeTxt = (TextView) findViewById(R.id.currentChallengeText);
+        ImageView badge1 = (ImageView) findViewById(R.id.badge1);
+        ImageView badge2 = (ImageView) findViewById(R.id.badge2);
+        ImageView badge3 = (ImageView) findViewById(R.id.badge3);
+        ImageView badge4 = (ImageView) findViewById(R.id.badge4);
+
+        TextView badge1text = (TextView) findViewById(R.id.badge1text);
+        TextView badge2text = (TextView) findViewById(R.id.badge2text);
+        TextView badge3text = (TextView) findViewById(R.id.badge3text);
+        TextView badge4text = (TextView) findViewById(R.id.badge4text);
+
+        int color1 = Color.parseColor("#59FF45");
+        int color2 = Color.parseColor("#4583FF");
+        int color3 = Color.parseColor("#FF4545");
+        int color4 = Color.parseColor("#A845FF");
+
+        badge1.setColorFilter(color1);
+        badge2.setColorFilter(color2);
+        badge3.setColorFilter(color3);
+        badge4.setColorFilter(color4);
+
+
 
         ArrayList<Challenge> challenges = PopulateChallenges();
         ArrayList<String> challengeNames = new ArrayList<>();
@@ -39,6 +61,7 @@ public class ChallengeActivity extends AppCompatActivity {
 
 //        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, challengeNames );
 //        challengeList.setAdapter(arrayAdapter);
+
 
         Bundle extras = getIntent().getExtras();
         final String challenge_no = extras.getString("CHALLENGE_NO");
@@ -64,7 +87,35 @@ public class ChallengeActivity extends AppCompatActivity {
             }
         });
 
+        badge1.setAlpha(0.1f);
+        badge1text.setAlpha(0.1f);
+        badge2.setAlpha(0.1f);
+        badge2text.setAlpha(0.1f);
+        badge3.setAlpha(0.1f);
+        badge3text.setAlpha(0.1f);
+        badge4.setAlpha(0.1f);
+        badge4text.setAlpha(0.1f);
 
+
+        switch(challengeIndex){
+            case 4: badge1.setAlpha(1.0f);
+                    badge1text.setAlpha(1.0f);
+                    break;
+            case 5:
+            case 6: badge1.setAlpha(1.0f);
+                    badge2.setAlpha(1.0f);
+                    badge1text.setAlpha(1.0f);
+                    badge2text.setAlpha(1.0f);
+                    break;
+            case 7:
+            case 8: badge1.setAlpha(1.0f);
+                    badge2.setAlpha(1.0f);
+                    badge3.setAlpha(1.0f);
+                    badge1text.setAlpha(1.0f);
+                    badge2text.setAlpha(1.0f);
+                    badge3text.setAlpha(1.0f);
+                    break;
+        }
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +132,10 @@ public class ChallengeActivity extends AppCompatActivity {
     public ArrayList<Challenge> PopulateChallenges() {
         ArrayList<Challenge> chalList = new ArrayList<>();
 
+        // badge for 1,2,3 - variable declarations
+        // badge for 4,8 - selection statement
+        // badge for 5,6 - loops
+        // badge for 9,10,11 - classes
         chalList.add(new Challenge(1, "Identify a variable that returns a number"));
         chalList.add(new Challenge(2, "Identify a variable that returns text"));
         chalList.add(new Challenge(3, "Identify a variable that returns true or false"));
