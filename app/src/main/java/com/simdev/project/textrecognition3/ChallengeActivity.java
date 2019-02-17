@@ -78,7 +78,7 @@ public class ChallengeActivity extends AppCompatActivity {
                 } else {
                     row.setBackgroundColor(Color.WHITE);
                 }
-                if(position + 1 == 8 || position + 1 == 9 || position + 1 == 10 || position + 1 == 11){
+                if(position + 1 == 9 || position + 1 == 10 || position + 1 == 11){
                     row.setAlpha(0.2f);
                 }else{
                     row.setAlpha(1);
@@ -98,23 +98,34 @@ public class ChallengeActivity extends AppCompatActivity {
 
 
         switch(challengeIndex){
+            //challenge 1,2,3 complete
             case 4: badge1.setAlpha(1.0f);
                     badge1text.setAlpha(1.0f);
                     break;
+            //challenge 4 complete
             case 5:
+            //challenge 4,5 complete
             case 6: badge1.setAlpha(1.0f);
-                    badge2.setAlpha(1.0f);
+//                    badge2.setAlpha(1.0f);
                     badge1text.setAlpha(1.0f);
-                    badge2text.setAlpha(1.0f);
+//                    badge2text.setAlpha(1.0f);
                     break;
             case 7:
             case 8: badge1.setAlpha(1.0f);
+//                    badge2.setAlpha(1.0f);
+                    badge3.setAlpha(1.0f);
+                    badge1text.setAlpha(1.0f);
+//                    badge2text.setAlpha(1.0f);
+                    badge3text.setAlpha(1.0f);
+                    break;
+            case 9: badge1.setAlpha(1.0f);
                     badge2.setAlpha(1.0f);
                     badge3.setAlpha(1.0f);
                     badge1text.setAlpha(1.0f);
                     badge2text.setAlpha(1.0f);
                     badge3text.setAlpha(1.0f);
                     break;
+
         }
 
         backBtn.setOnClickListener(new View.OnClickListener() {

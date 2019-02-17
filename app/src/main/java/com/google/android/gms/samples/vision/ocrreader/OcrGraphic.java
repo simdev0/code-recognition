@@ -23,8 +23,6 @@ import android.graphics.RectF;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.text.Text;
 
-import java.util.List;
-
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
  * overlay view.
@@ -67,9 +65,9 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             }
 
             if (textPaint == null) {
-//            textPaint = new Paint();
-//            textPaint.setColor(TEXT_COLOR);
-//            textPaint.setTextSize(54.0f);
+                textPaint = new Paint();
+                textPaint.setColor(TEXT_COLOR);
+                textPaint.setTextSize(54.0f);
             }
             // Redraw the overlay, as this graphic has been added.
             postInvalidate();
@@ -125,7 +123,6 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             rectPaint.setColor(TEXT_COLOR);
         }
 
-
 //        text.getBoundingBox().top +=160;
         text.getBoundingBox().right += 100;
         RectF rect = new RectF(text.getBoundingBox());
@@ -133,11 +130,17 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         canvas.drawRect(rect, rectPaint);
 
         // Break the text into multiple lines and draw each one according to its own bounding box.
-        List<? extends Text> textComponents = text.getComponents();
-        for (Text currentText : textComponents) {
-            float left = translateX(currentText.getBoundingBox().left);
-            float bottom = translateY(currentText.getBoundingBox().bottom);
-//            canvas.drawText(currentText.getValue(), left, bottom, textPaint);
-        }
+//        List<? extends Text> textComponents = text.getComponents();
+
+        //gets the first word by finding the first gap
+//        int gap = text.getValue().indexOf(' ');
+//        String word = text.getValue().substring(0, gap);
+
+
+//        for (Text currentText : textComponents) {
+//            float left = translateX(currentText.getBoundingBox().left);
+//            float top = translateY(currentText.getBoundingBox().top);
+//            canvas.drawText(currentText.getValue(), left, top, textPaint);
+//        }
     }
 }

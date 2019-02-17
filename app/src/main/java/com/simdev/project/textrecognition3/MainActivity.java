@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences mPrefs;
 
     SurfaceView cameraView;
     TextView textView;
@@ -172,6 +174,13 @@ public class MainActivity extends AppCompatActivity {
             finishButton.setVisibility(View.INVISIBLE);
         }
 
+
+        //STORING CHALLENGE NUMBER
+        mPrefs = context.getSharedPreferences("challenges", 0);
+        int savedChallengeNum = mPrefs.getInt("challengeNum", 1);
+        currentChallengeNum = savedChallengeNum;
+        Log.d("SAVED CHALLENGE: ", ""+savedChallengeNum);
+
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
             Log.w("MainActivity", "Detector Dependencies are not yet available");
@@ -226,12 +235,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish() {
                     progressBar.setProgress(0);
                     progressBar.setVisibility(View.INVISIBLE);
+                    infoProgress.setVisibility(View.INVISIBLE);
                     switchPage = true;
 
                     if (!challengeComplete) {
                         captureButton.setEnabled(true);
                     }
                     challengeBtn.setEnabled(true);
+                    screenCapture = false;
 
                 }
             };
@@ -318,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
                                 final StringBuilder stringBuilder = new StringBuilder();
                                 int variableCount = 0;
                                 int ifCount = 0;
+                                int elseCount = 0;
                                 int forCount = 0;
                                 int whileCount = 0;
                                 int switchCount = 0;
@@ -328,9 +340,11 @@ public class MainActivity extends AppCompatActivity {
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                                    if (currentChallengeNum != 8) {
+                                    if (currentChallengeNum != 9) {
                                         builder.setMessage("Check Challenges screen for next challenge.")
                                                 .setTitle("Challenge " + (currentChallengeNum - 1) + " complete!");
+                                        SharedPreferences.Editor mEditor = mPrefs.edit();
+                                        mEditor.putInt("challengeNum", currentChallengeNum).commit();
                                     } else {
                                         builder.setMessage("Congratulation! All implemented challenges completed." +
                                                 " Await application update for more challenges to come...");
@@ -368,9 +382,11 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean arrayFound = line.getValue().startsWith("Array");
 
                                                 boolean ifFound = line.getValue().startsWith("if");
+                                                boolean elseFound = line.getValue().startsWith("else") || line.getValue().startsWith("}else")
+                                                        || line.getValue().startsWith("} else");
                                                 boolean forFound = line.getValue().startsWith("for");
                                                 boolean whileFound = line.getValue().startsWith("while");
-                                                final boolean switchFound = line.getValue().startsWith("switch");
+                                                boolean switchFound = line.getValue().startsWith("switch");
 
                                                 //VARIABLE DECLARATIONS
                                                 if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound || arrayFound) {
@@ -405,8 +421,21 @@ public class MainActivity extends AppCompatActivity {
                                                         challengeComplete = true;
                                                     }
 
+
+
                                                     //LOOPS
-                                                } else if (forFound || whileFound) {
+                                                } else if(elseFound){
+                                                    graphic = new OcrGraphic(graphicOverlay, line, false, false, true, false);
+                                                    elseCount++;
+                                                    if(currentChallengeNum == 8 && tutorial){
+                                                        currentChallengeNum++;
+                                                        challengeComplete = true;
+                                                    }
+
+                                                    Log.d("THIS IS THE ITEM!!!!", ""+item.getValue());
+                                                    Log.d("IS THIS TRUE?!", ""+elseFound);
+
+                                                }else if (forFound || whileFound) {
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, true, false, false);
 
                                                     if (forFound) {
@@ -457,6 +486,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 stringBuilder.insert(0, variableCount + " Variable Declarations Found\n");
                                 stringBuilder.append("\n" + ifCount + " If Conditions Found\n");
+                                stringBuilder.append(elseCount + " else/else if statements Found\n");
                                 stringBuilder.append(forCount + " For Loops Found\n");
                                 stringBuilder.append(whileCount + " While Loops Found\n");
                                 stringBuilder.append(switchCount + " Switch Statements Found\n");
@@ -465,6 +495,10 @@ public class MainActivity extends AppCompatActivity {
                                 if (ifCount >= 1) {
                                     stringBuilder.append("\n-If conditions are statements that execute only IF the condition is true." +
                                             "The code within the curly brackets {} is what is executed");
+                                }
+                                if(elseCount >= 1){
+                                    stringBuilder.append("\n-When the if condition falls true, " +
+                                            "the code beneath is executed. Inserting an \"else\" afterwards will execute the other condition.");
                                 }
                                 if (forCount >= 1 || whileCount >= 1) {
                                     stringBuilder.append("\n-Loops are used to execute a set of statements repeatedly until a particular condition is satisfied.");
@@ -479,11 +513,11 @@ public class MainActivity extends AppCompatActivity {
                                     stringBuilder.append("\n-This works similar to an else-if statement. It \"switches\" the variable and shows a variety of cases." +
                                             " If a specific case is true, the code underneath it is executed.");
                                 }
-
-                                if (!screenCapture) {
-                                    infoProgress.setProgress(0);
-                                    infoProgress.setVisibility(View.INVISIBLE);
-                                }
+//
+//                                if (!screenCapture) {
+//                                    infoProgress.setProgress(0);
+//                                    infoProgress.setVisibility(View.INVISIBLE);
+//                                }
 
                             }
                         });
@@ -513,7 +547,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-
 
 // item.getValue shows the block, need to split up into lines
 // if code found, make DING noise and either surround code with box or show a tick
