@@ -20,6 +20,13 @@
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/methodFoundText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

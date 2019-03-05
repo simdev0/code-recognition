@@ -1,9 +1,12 @@
 package com.simdev.project.textrecognition3;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 
 public class ChallengeActivity extends AppCompatActivity {
 
+    String challenge_no;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +29,18 @@ public class ChallengeActivity extends AppCompatActivity {
         setContentView(R.layout.content_challenge);
 
         Button backBtn = (Button) findViewById(R.id.backBtn);
-        TextView currentChallengeTxt = (TextView) findViewById(R.id.currentChallengeText);
-        ImageView badge1 = (ImageView) findViewById(R.id.badge1);
-        ImageView badge2 = (ImageView) findViewById(R.id.badge2);
-        ImageView badge3 = (ImageView) findViewById(R.id.badge3);
-        ImageView badge4 = (ImageView) findViewById(R.id.badge4);
+        Button resetBtn = (Button) findViewById(R.id.resetBtn);
 
-        TextView badge1text = (TextView) findViewById(R.id.badge1text);
-        TextView badge2text = (TextView) findViewById(R.id.badge2text);
-        TextView badge3text = (TextView) findViewById(R.id.badge3text);
-        TextView badge4text = (TextView) findViewById(R.id.badge4text);
+        final TextView currentChallengeTxt = (TextView) findViewById(R.id.currentChallengeText);
+        final ImageView badge1 = (ImageView) findViewById(R.id.badge1);
+        final ImageView badge2 = (ImageView) findViewById(R.id.badge2);
+        final ImageView badge3 = (ImageView) findViewById(R.id.badge3);
+        final ImageView badge4 = (ImageView) findViewById(R.id.badge4);
+
+        final TextView badge1text = (TextView) findViewById(R.id.badge1text);
+        final TextView badge2text = (TextView) findViewById(R.id.badge2text);
+        final TextView badge3text = (TextView) findViewById(R.id.badge3text);
+        final TextView badge4text = (TextView) findViewById(R.id.badge4text);
 
         int color1 = Color.parseColor("#59FF45");
         int color2 = Color.parseColor("#4583FF");
@@ -47,9 +53,8 @@ public class ChallengeActivity extends AppCompatActivity {
         badge4.setColorFilter(color4);
 
 
-
         ArrayList<Challenge> challenges = PopulateChallenges();
-        ArrayList<String> challengeNames = new ArrayList<>();
+        final ArrayList<String> challengeNames = new ArrayList<>();
 
 
         for (Challenge challenge : challenges) {
@@ -57,18 +62,19 @@ public class ChallengeActivity extends AppCompatActivity {
             challengeNames.add(challenge.number + ". " + challenge.name);
         }
 
-        ListView challengeList = (ListView) findViewById(R.id.challengeList);
+        final ListView challengeList = (ListView) findViewById(R.id.challengeList);
 
 //        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, challengeNames );
 //        challengeList.setAdapter(arrayAdapter);
 
 
         Bundle extras = getIntent().getExtras();
-        final String challenge_no = extras.getString("CHALLENGE_NO");
+        challenge_no = extras.getString("CHALLENGE_NO");
         Log.d("number is ", challenge_no);
         currentChallengeTxt.setText("Current Challenge: " + challenge_no);
         final int challengeIndex = Integer.parseInt(challenge_no);
-        challengeList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, challengeNames) {
+
+        final ArrayAdapter<String> ListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, challengeNames) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View row = super.getView(position, convertView, parent);
@@ -78,14 +84,16 @@ public class ChallengeActivity extends AppCompatActivity {
                 } else {
                     row.setBackgroundColor(Color.WHITE);
                 }
-                if(position + 1 == 9 || position + 1 == 10 || position + 1 == 11){
+                if (position + 1 == 10 || position + 1 == 11) {
                     row.setAlpha(0.2f);
-                }else{
+                } else {
                     row.setAlpha(1);
                 }
                 return row;
             }
-        });
+        };
+
+        challengeList.setAdapter(ListAdapter);
 
         badge1.setAlpha(0.1f);
         badge1text.setAlpha(0.1f);
@@ -97,34 +105,38 @@ public class ChallengeActivity extends AppCompatActivity {
         badge4text.setAlpha(0.1f);
 
 
-        switch(challengeIndex){
+        switch (challengeIndex) {
             //challenge 1,2,3 complete
-            case 4: badge1.setAlpha(1.0f);
-                    badge1text.setAlpha(1.0f);
-                    break;
+            case 4:
+                badge1.setAlpha(1.0f);
+                badge1text.setAlpha(1.0f);
+                break;
             //challenge 4 complete
             case 5:
-            //challenge 4,5 complete
-            case 6: badge1.setAlpha(1.0f);
+                //challenge 4,5 complete
+            case 6:
+                badge1.setAlpha(1.0f);
 //                    badge2.setAlpha(1.0f);
-                    badge1text.setAlpha(1.0f);
+                badge1text.setAlpha(1.0f);
 //                    badge2text.setAlpha(1.0f);
-                    break;
+                break;
             case 7:
-            case 8: badge1.setAlpha(1.0f);
+            case 8:
+                badge1.setAlpha(1.0f);
 //                    badge2.setAlpha(1.0f);
-                    badge3.setAlpha(1.0f);
-                    badge1text.setAlpha(1.0f);
+                badge3.setAlpha(1.0f);
+                badge1text.setAlpha(1.0f);
 //                    badge2text.setAlpha(1.0f);
-                    badge3text.setAlpha(1.0f);
-                    break;
-            case 9: badge1.setAlpha(1.0f);
-                    badge2.setAlpha(1.0f);
-                    badge3.setAlpha(1.0f);
-                    badge1text.setAlpha(1.0f);
-                    badge2text.setAlpha(1.0f);
-                    badge3text.setAlpha(1.0f);
-                    break;
+                badge3text.setAlpha(1.0f);
+                break;
+            case 9:
+                badge1.setAlpha(1.0f);
+                badge2.setAlpha(1.0f);
+                badge3.setAlpha(1.0f);
+                badge1text.setAlpha(1.0f);
+                badge2text.setAlpha(1.0f);
+                badge3text.setAlpha(1.0f);
+                break;
 
         }
 
@@ -138,7 +150,62 @@ public class ChallengeActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        challenge_no = 1 + "";
+                        currentChallengeTxt.setText("Current Challenge: " + challenge_no);
+                        SharedPreferences mPrefs = getApplicationContext().getSharedPreferences("challenges", 0);
+                        SharedPreferences.Editor mEditor = mPrefs.edit();
+                        mEditor.putInt("challengeNum", 1).commit();
+                        badge1.setAlpha(0.1f);
+                        badge1text.setAlpha(0.1f);
+                        badge2.setAlpha(0.1f);
+                        badge2text.setAlpha(0.1f);
+                        badge3.setAlpha(0.1f);
+                        badge3text.setAlpha(0.1f);
+                        badge4.setAlpha(0.1f);
+                        badge4text.setAlpha(0.1f);
+                        challengeList.setAdapter(new ArrayAdapter<String>(ChallengeActivity.this, android.R.layout.simple_list_item_1, challengeNames) {
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                View row = super.getView(position, convertView, parent);
+
+                                row.setBackgroundColor(Color.WHITE);
+
+                                if (position + 1 == 10 || position + 1 == 11) {
+                                    row.setAlpha(0.2f);
+                                } else {
+                                    row.setAlpha(1);
+                                }
+                                return row;
+                            }
+                        });
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChallengeActivity.this);
+                builder.setMessage("Are you sure?")
+                       .setPositiveButton("Yes", dialogClickListener)
+                       .setNegativeButton("No", dialogClickListener).show();
+            }
+        });
     }
+
 
     public ArrayList<Challenge> PopulateChallenges() {
         ArrayList<Challenge> chalList = new ArrayList<>();
@@ -155,7 +222,7 @@ public class ChallengeActivity extends AppCompatActivity {
         chalList.add(new Challenge(6, "Identify an iteration block with just a condition (while)"));
         chalList.add(new Challenge(7, "Identify a switch-case statement"));
         chalList.add(new Challenge(8, "Identify a selection statement with both conditions (else)"));
-        chalList.add(new Challenge(9, "Identify a declaration of a new class"));
+        chalList.add(new Challenge(9, "Identify both method declaration and basic method call"));
         chalList.add(new Challenge(10, "Identify a getter method"));
         chalList.add(new Challenge(11, "Identify a setter method"));
 

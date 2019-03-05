@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     SurfaceView cameraView;
     TextView textView;
+    TextView methodFoundText;
     View crossHair;
     View crossHairBox;
     GraphicOverlay<OcrGraphic> graphicOverlay;
@@ -60,13 +61,19 @@ public class MainActivity extends AppCompatActivity {
     boolean screenCapture = false;
     boolean challengeComplete = false;
     boolean dialogShown = false;
+    boolean methodDialogShown = false;
+    boolean methodNameSelected = false;
     boolean tutorial = false;
     boolean appStart = true;
     boolean switchPage = false;
 
+    String methodName;
+
     TextView info1;
     private ViewPager pager = null;
     private MainPagerAdapter pagerAdapter = null;
+
+    AlertDialog methodDialog;
 
     CountDownTimer countDownTimer;
 
@@ -98,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         cameraView = (SurfaceView) findViewById(R.id.surface_view);
         textView = (TextView) findViewById(R.id.text_view);
+        methodFoundText = (TextView) findViewById(R.id.methodFoundText);
         crossHair = (View) findViewById(R.id.crossHair);
         crossHairBox = (View) findViewById(R.id.crossHairBox);
         captureButton = (Button) findViewById(R.id.capture);
@@ -323,6 +331,8 @@ public class MainActivity extends AppCompatActivity {
                         textView.post(new Runnable() {
                             @Override
                             public void run() {
+                                Log.d("The Method Name is ", ""+methodName);
+
                                 int crossHairLocation[] = new int[2];
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
 
@@ -334,13 +344,14 @@ public class MainActivity extends AppCompatActivity {
                                 int whileCount = 0;
                                 int switchCount = 0;
                                 if (challengeComplete && !dialogShown) {
+                                    currentChallengeNum++;
                                     captureButton.setEnabled(false);
                                     progressBar.setProgress(0);
                                     progressBar.setVisibility(View.INVISIBLE);
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                                    if (currentChallengeNum != 9) {
+                                    if (currentChallengeNum != 10) {
                                         builder.setMessage("Check Challenges screen for next challenge.")
                                                 .setTitle("Challenge " + (currentChallengeNum - 1) + " complete!");
                                         SharedPreferences.Editor mEditor = mPrefs.edit();
@@ -387,9 +398,11 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean forFound = line.getValue().startsWith("for");
                                                 boolean whileFound = line.getValue().startsWith("while");
                                                 boolean switchFound = line.getValue().startsWith("switch");
+                                                boolean publicOrPrivate = line.getValue().startsWith("public") || line.getValue().startsWith("private")
+                                                        || line.getValue().startsWith("public static") || line.getValue().startsWith("private static");
 
                                                 //VARIABLE DECLARATIONS
-                                                if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound || arrayFound) {
+                                                if (integerFound || doubleFound || floatFound || stringFound || charFound || booleanFound || arrayFound || publicOrPrivate) {
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, false, false, true);
 
                                                     String[] sp = line.getValue().split(" ");
@@ -400,15 +413,62 @@ public class MainActivity extends AppCompatActivity {
                                                         stringBuilder.append(" - variable type: " + sp[0] + ", variable name: " + sp[1] + "\n");
                                                         variableCount++;
                                                     }
-//      ArrayList<String> check= j
+
+                                                    if(publicOrPrivate) {
+                                                        try {
+                                                            switch (sp[1]) {
+                                                                case "int":
+                                                                    integerFound = true;
+                                                                    break;
+                                                                case "double":
+                                                                    doubleFound = true;
+                                                                    break;
+                                                                case "float":
+                                                                    floatFound = true;
+                                                                    break;
+                                                                case "String":
+                                                                    stringFound = true;
+                                                                    break;
+                                                                case "char":
+                                                                    charFound = true;
+                                                                    break;
+                                                                case "boolean":
+                                                                    arrayFound = true;
+                                                                    break;
+                                                                default:
+                                                                    break;
+                                                            }
+                                                            switch (sp[2]) {
+                                                                case "int":
+                                                                    integerFound = true;
+                                                                    break;
+                                                                case "double":
+                                                                    doubleFound = true;
+                                                                    break;
+                                                                case "float":
+                                                                    floatFound = true;
+                                                                    break;
+                                                                case "String":
+                                                                    stringFound = true;
+                                                                    break;
+                                                                case "char":
+                                                                    charFound = true;
+                                                                    break;
+                                                                case "boolean":
+                                                                    arrayFound = true;
+                                                                    break;
+                                                                default:
+                                                                    break;
+                                                            }
+                                                        }catch(ArrayIndexOutOfBoundsException ex){
+
+                                                        }
+                                                    }
                                                     if ((currentChallengeNum == 1 && (integerFound || doubleFound || floatFound)) && tutorial) {
-                                                        currentChallengeNum++;
                                                         challengeComplete = true;
                                                     } else if ((currentChallengeNum == 2 && (stringFound || charFound)) && tutorial) {
-                                                        currentChallengeNum++;
                                                         challengeComplete = true;
                                                     } else if ((currentChallengeNum == 3 && (booleanFound)) && tutorial) {
-                                                        currentChallengeNum++;
                                                         challengeComplete = true;
                                                     }
 
@@ -417,31 +477,23 @@ public class MainActivity extends AppCompatActivity {
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, false, true, false);
                                                     ifCount++;
                                                     if (currentChallengeNum == 4 && tutorial) {
-                                                        currentChallengeNum++;
                                                         challengeComplete = true;
                                                     }
 
-
-
-                                                    //LOOPS
                                                 } else if(elseFound){
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, false, true, false);
                                                     elseCount++;
                                                     if(currentChallengeNum == 8 && tutorial){
-                                                        currentChallengeNum++;
                                                         challengeComplete = true;
                                                     }
 
-                                                    Log.d("THIS IS THE ITEM!!!!", ""+item.getValue());
-                                                    Log.d("IS THIS TRUE?!", ""+elseFound);
-
+                                                    //LOOPS
                                                 }else if (forFound || whileFound) {
                                                     graphic = new OcrGraphic(graphicOverlay, line, false, true, false, false);
 
                                                     if (forFound) {
                                                         forCount++;
                                                         if (currentChallengeNum == 5 && tutorial) {
-                                                            currentChallengeNum++;
                                                             challengeComplete = true;
                                                         }
                                                     }
@@ -449,7 +501,6 @@ public class MainActivity extends AppCompatActivity {
                                                     if (whileFound) {
                                                         whileCount++;
                                                         if (currentChallengeNum == 6 && tutorial) {
-                                                            currentChallengeNum++;
                                                             challengeComplete = true;
                                                         }
                                                     }
@@ -459,10 +510,51 @@ public class MainActivity extends AppCompatActivity {
                                                     graphic = new OcrGraphic(graphicOverlay, line, true, false, false, false);
                                                     switchCount++;
                                                     if (currentChallengeNum == 7 && tutorial) {
-                                                        currentChallengeNum++;
                                                         challengeComplete = true;
                                                     }
+                                                } if(currentChallengeNum == 9 && tutorial){
+                                                    String[] sp = line.getValue().split(" ");
+                                                    try{
+                                                        if(line.getValue().contains("static") && publicOrPrivate && line.getValue().endsWith(")")){
+                                                            methodName = sp[3];
+                                                        }else if((!line.getValue().contains("static")) && publicOrPrivate && line.getValue().endsWith(")")){
+                                                            methodName = sp[2];
+                                                        }
+                                                        if(!methodNameSelected && methodName != null) {
+                                                            AlertDialog.Builder methodDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                                                            methodDialogBuilder.setMessage("The method to look for is \"" + methodName + "\". Is this correct?")
+                                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                                        public void onClick(DialogInterface dialog, int id) {
+                                                                            methodNameSelected = true;
+                                                                        }
+                                                                    })
+                                                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                                        public void onClick(DialogInterface dialog, int id) {
+                                                                            methodName = "";
+                                                                            methodFoundText.setText("");
+                                                                            methodNameSelected = false;
+                                                                        }
+                                                                    });
+                                                            methodDialog = methodDialogBuilder.create();
+                                                            methodDialogShown = true;
+                                                        }
+
+                                                    }catch(ArrayIndexOutOfBoundsException ex){
+
+                                                    }
+                                                    try{
+                                                        methodFoundText.setText(methodName);
+                                                        //capture again to find method call
+                                                        if(line.getValue().startsWith(methodName) && methodNameSelected){
+                                                            challengeComplete = true;
+                                                        }
+                                                    }catch(Exception ex){
+
+                                                    }
+
+
                                                 }
+
                                                 graphicOverlay.add(graphic);
 
                                                 Handler handler = new Handler();
@@ -474,6 +566,9 @@ public class MainActivity extends AppCompatActivity {
                                                         if (switchPage) {
                                                             pager.setCurrentItem(0, true);
                                                             switchPage = false;
+                                                        }
+                                                        if(methodDialogShown && !methodNameSelected){
+                                                            methodDialog.show();
                                                         }
 
                                                     }
@@ -513,11 +608,6 @@ public class MainActivity extends AppCompatActivity {
                                     stringBuilder.append("\n-This works similar to an else-if statement. It \"switches\" the variable and shows a variety of cases." +
                                             " If a specific case is true, the code underneath it is executed.");
                                 }
-//
-//                                if (!screenCapture) {
-//                                    infoProgress.setProgress(0);
-//                                    infoProgress.setVisibility(View.INVISIBLE);
-//                                }
 
                             }
                         });
@@ -527,6 +617,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
 
     @Override
@@ -548,7 +639,6 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-// item.getValue shows the block, need to split up into lines
 // if code found, make DING noise and either surround code with box or show a tick
 
 //
@@ -556,3 +646,24 @@ public class MainActivity extends AppCompatActivity {
 //int seventeen = 17;
 //int another=231;
 
+
+//              while
+//              switch
+//              }else
+
+
+/*
+
+                                    public void setting(){
+
+        }
+
+
+String
+boolean
+if
+for
+
+
+
+ */
