@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     boolean tutorial = false;
     boolean appStart = true;
     boolean switchPage = false;
+    boolean publicOrPrivate = false;
 
     String methodName;
 
@@ -187,11 +188,10 @@ public class MainActivity extends AppCompatActivity {
         mPrefs = context.getSharedPreferences("challenges", 0);
         int savedChallengeNum = mPrefs.getInt("challengeNum", 1);
         currentChallengeNum = savedChallengeNum;
-        Log.d("SAVED CHALLENGE: ", ""+savedChallengeNum);
 
         TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         if (!textRecognizer.isOperational()) {
-            Log.w("MainActivity", "Detector Dependencies are not yet available");
+            Log.w("MainActivity", "Not operational - Detector Dependencies are not yet available");
         } else {
             cameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
@@ -316,6 +316,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            methodFoundText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    methodName = null;
+                    methodFoundText.setText("");
+                    methodNameSelected = false;
+                    publicOrPrivate = false;
+                    Log.d("ITS BEEN CLICKED ", "");
+
+                }
+            });
+
+
 
             textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
                 @Override
@@ -398,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean forFound = line.getValue().startsWith("for");
                                                 boolean whileFound = line.getValue().startsWith("while");
                                                 boolean switchFound = line.getValue().startsWith("switch");
-                                                boolean publicOrPrivate = line.getValue().startsWith("public") || line.getValue().startsWith("private")
+                                                publicOrPrivate = line.getValue().startsWith("public") || line.getValue().startsWith("private")
                                                         || line.getValue().startsWith("public static") || line.getValue().startsWith("private static");
 
                                                 //VARIABLE DECLARATIONS
@@ -530,9 +543,11 @@ public class MainActivity extends AppCompatActivity {
                                                                     })
                                                                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                                         public void onClick(DialogInterface dialog, int id) {
-                                                                            methodName = "";
+                                                                            methodName = null;
                                                                             methodFoundText.setText("");
                                                                             methodNameSelected = false;
+                                                                            publicOrPrivate = false;
+
                                                                         }
                                                                     });
                                                             methodDialog = methodDialogBuilder.create();
@@ -542,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
                                                     }catch(ArrayIndexOutOfBoundsException ex){
 
                                                     }
-                                                    try{
+                                                    try{//marktolba can code like crqzy hells ye dude i respect that
                                                         methodFoundText.setText(methodName);
                                                         //capture again to find method call
                                                         if(line.getValue().startsWith(methodName) && methodNameSelected){
@@ -551,7 +566,6 @@ public class MainActivity extends AppCompatActivity {
                                                     }catch(Exception ex){
 
                                                     }
-
 
                                                 }
 
@@ -653,17 +667,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 /*
-
-                                    public void setting(){
-
+test(fgh );
+                                    public void huy (){
+hi();
         }
 
+hyrr()
 
 String
 boolean
 if
 for
 
+no();
 
 
  */

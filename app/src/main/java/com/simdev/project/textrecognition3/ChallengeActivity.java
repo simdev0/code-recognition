@@ -137,6 +137,17 @@ public class ChallengeActivity extends AppCompatActivity {
                 badge2text.setAlpha(1.0f);
                 badge3text.setAlpha(1.0f);
                 break;
+            case 10:
+                badge1.setAlpha(1.0f);
+                badge2.setAlpha(1.0f);
+                badge3.setAlpha(1.0f);
+                badge4.setAlpha(1.0f);
+                badge1text.setAlpha(1.0f);
+                badge2text.setAlpha(1.0f);
+                badge3text.setAlpha(1.0f);
+                badge4text.setAlpha(1.0f);
+                currentChallengeTxt.setText("All Challenges Completed!");
+                break;
 
         }
 

@@ -89,7 +89,7 @@
             android:id="@+id/badge4text"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:text="Java Classes"
+            android:text="Java Methods"
             android:gravity="center"
             android:layout_marginLeft="10dp"
 

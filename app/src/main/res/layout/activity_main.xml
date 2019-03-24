@@ -25,7 +25,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:clickable="true"
+        android:onClick="webClick"/>
 
     <RelativeLayout
         android:layout_width="fill_parent"
