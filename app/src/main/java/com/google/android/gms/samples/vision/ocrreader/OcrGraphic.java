@@ -123,9 +123,11 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             rectPaint.setColor(TEXT_COLOR);
         }
 
-//        text.getBoundingBox().top +=160;
         text.getBoundingBox().right += 100;
         RectF rect = new RectF(text.getBoundingBox());
+        rect.top +=160;
+        rect.bottom +=160;
+
         rect = translateRect(rect);
         canvas.drawRect(rect, rectPaint);
 

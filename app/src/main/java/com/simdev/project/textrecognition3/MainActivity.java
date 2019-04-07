@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     TextView methodFoundText;
     View crossHair;
     View crossHairBox;
+    View linetest;
     GraphicOverlay<OcrGraphic> graphicOverlay;
     CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
@@ -109,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
         methodFoundText = (TextView) findViewById(R.id.methodFoundText);
         crossHair = (View) findViewById(R.id.crossHair);
         crossHairBox = (View) findViewById(R.id.crossHairBox);
+
+        linetest = (View) findViewById(R.id.linetest);
+        linetest.setVisibility(View.VISIBLE);
+
         captureButton = (Button) findViewById(R.id.capture);
         finishButton = (Button) findViewById(R.id.finishTutorialBtn);
         tutorialButton = (Button) findViewById(R.id.tutorialBtn);
@@ -166,7 +171,11 @@ public class MainActivity extends AppCompatActivity {
 
         infoProgress = (ProgressBar) v0.findViewById(R.id.infoProgress);
         info1 = (TextView) v0.findViewById(R.id.info1);
-        info1.setText("This screen shows components of the code you scan. Click capture to identify different items and they will show up here.");
+        info1.setText("This screen shows components of the code you scan. Click capture to identify different items and they will show up here." +
+                "\nGreen Boxes show lines with variables declarations" +
+                "\nRed Boxes show lines with iterations" +
+                "\nBlue Boxes show lines with conditional statements" +
+                "\nYellow Boxes show lines with switch statements");
         info1.setMovementMethod(new ScrollingMovementMethod());
         pagerAdapter.notifyDataSetChanged();
 
@@ -348,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 int crossHairLocation[] = new int[2];
                                 crossHairBox.getLocationOnScreen(crossHairLocation);
-
+                                Log.d("box location",crossHairLocation[1]+"");
                                 final StringBuilder stringBuilder = new StringBuilder();
                                 int variableCount = 0;
                                 int ifCount = 0;
@@ -392,9 +401,9 @@ public class MainActivity extends AppCompatActivity {
                                     for (Text line : item.getComponents()) {
 
                                         if (line != null && line.getValue() != null && screenCapture && !challengeComplete) {
-
-                                            if ((line.getBoundingBox().top >= crossHairLocation[1] - 130 &&
-                                                    line.getBoundingBox().bottom <= crossHairLocation[1] + 150) || !tutorial) {
+                                            // - 130    +150   for xiaomi
+                                            if ((line.getBoundingBox().top >= crossHairLocation[1] - 200 &&
+                                                    line.getBoundingBox().bottom <= crossHairLocation[1] -50) || !tutorial) {
                                                 OcrGraphic graphic = new OcrGraphic(graphicOverlay, null, false, false, false, false);
 
                                                 boolean integerFound = line.getValue().startsWith("int");
@@ -677,7 +686,31 @@ hyrr()
 String
 boolean
 if
+
+
+
+
+
+
 for
+
+
+
+
+
+
+
+
+
+
+
+ while(true){
+
+}
+
+
+
+
 
 no();
 

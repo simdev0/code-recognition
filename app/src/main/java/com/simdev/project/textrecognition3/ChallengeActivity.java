@@ -225,16 +225,16 @@ public class ChallengeActivity extends AppCompatActivity {
         // badge for 4,8 - selection statement
         // badge for 5,6 - loops
         // badge for 9,10,11 - classes
-        chalList.add(new Challenge(1, "Identify a variable that returns a number"));
-        chalList.add(new Challenge(2, "Identify a variable that returns text"));
-        chalList.add(new Challenge(3, "Identify a variable that returns true or false"));
+        chalList.add(new Challenge(1, "Identify a variable that can be assigned a number"));
+        chalList.add(new Challenge(2, "Identify a variable that can be assigned text"));
+        chalList.add(new Challenge(3, "Identify a variable that can be assigned true or false"));
         chalList.add(new Challenge(4, "Identify a selection statement"));
-        chalList.add(new Challenge(5, "Identify an iteration block with an incrementing or decrementing condition (for)"));
-        chalList.add(new Challenge(6, "Identify an iteration block with just a condition (while)"));
+        chalList.add(new Challenge(5, "Identify an iteration block with an implemented counter"));
+        chalList.add(new Challenge(6, "Identify an iteration block type distinguished from challenge 5"));
         chalList.add(new Challenge(7, "Identify a switch-case statement"));
-        chalList.add(new Challenge(8, "Identify a selection statement with both conditions (else)"));
+        chalList.add(new Challenge(8, "Identify a block in a selection statement which executes when the expression is false"));
         chalList.add(new Challenge(9, "Identify both method declaration and basic method call"));
-        chalList.add(new Challenge(10, "Identify a getter method"));
+        chalList.add(new Challenge(10, "Identify an array declaration"));
         chalList.add(new Challenge(11, "Identify a setter method"));
 
         return chalList;

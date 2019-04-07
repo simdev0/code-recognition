@@ -57,6 +57,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/badges"
         android:layout_marginTop="-20dp"
+        android:layout_marginLeft="120dp"
         >
 
         <TextView
@@ -118,7 +119,7 @@
     <ListView
         android:id="@+id/challengeList"
         android:layout_width="wrap_content"
-        android:layout_height="350dp"
+        android:layout_height="550dp"
         android:layout_above="@id/backBtn"
         android:layout_marginBottom="20dp"
         />

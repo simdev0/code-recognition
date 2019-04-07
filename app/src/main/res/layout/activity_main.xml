@@ -61,6 +61,15 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/crosshair" />
 
+        <View
+            android:id="@+id/linetest"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/linetest" />
+
+
         <Button
             android:id="@+id/capture"
             android:layout_width="wrap_content"
