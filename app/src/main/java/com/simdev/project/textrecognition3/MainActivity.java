@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.samples.vision.ocrreader.OcrGraphic;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
@@ -35,7 +36,12 @@ import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     SharedPreferences mPrefs;
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     Button tutorialButton;
     Button finishButton;
     Button challengeBtn;
+    int captureCount = 0;
     int currentChallengeNum = 1;
 
     boolean screenCapture = false;
@@ -79,8 +86,23 @@ public class MainActivity extends AppCompatActivity {
 
     CountDownTimer countDownTimer;
 
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    1
+            );
+        }
+
         switch (requestCode) {
             case RequestCameraPermissionID: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -96,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
     }
 
     @Override
@@ -122,12 +145,13 @@ public class MainActivity extends AppCompatActivity {
         graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
 
+
         pagerAdapter = new MainPagerAdapter();
         pager = (ViewPager) findViewById(R.id.view_pager);
         pager.setAdapter(pagerAdapter);
 
         // Create an initial view to display; must be a subclass of FrameLayout.
-        Activity context = this;
+        final Activity context = this;
         LayoutInflater inflater = context.getLayoutInflater();
         FrameLayout v0 = (FrameLayout) inflater.inflate(R.layout.page, null);
         View v1 = new View(getApplicationContext());
@@ -191,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
             challengeBtn.setVisibility(View.INVISIBLE);
             finishButton.setVisibility(View.INVISIBLE);
         }
+
+
 
 
         //STORING CHALLENGE NUMBER
@@ -279,6 +305,8 @@ public class MainActivity extends AppCompatActivity {
                         progressBar.setProgress(0);
                         countDownTimer.start();
                     }
+
+                    captureCount++;
                 }
             });
 
@@ -370,6 +398,25 @@ public class MainActivity extends AppCompatActivity {
                                     captureButton.setEnabled(false);
                                     progressBar.setProgress(0);
                                     progressBar.setVisibility(View.INVISIBLE);
+
+                                    try {
+                                        File myFile = new File("/sdcard/log.txt");
+                                        myFile.createNewFile();
+                                        FileOutputStream fOut = new FileOutputStream(myFile, true);
+                                        OutputStreamWriter myOutWriter =
+                                                new OutputStreamWriter(fOut);
+                                        Date currentTime = Calendar.getInstance().getTime();
+                                        myOutWriter.append("Challenge "+(currentChallengeNum-1) + ": "+captureCount +" attempts - time: "+currentTime+"\n\r");
+                                        myOutWriter.close();
+                                        fOut.close();
+//                                        Log.d("****************",MainActivity.this.getFilesDir().getAbsolutePath()+"");
+
+                                    }
+                                    catch (Exception e) {
+                                        Log.e("Exception", "File write failed: " + e.toString());
+                                    }
+                                    captureCount = 0;
+
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -585,6 +632,10 @@ public class MainActivity extends AppCompatActivity {
                                                     @Override
                                                     public void run() {
                                                         screenCapture = false;
+                                                        if(!challengeComplete){
+                                                            Toast toast=Toast.makeText(getBaseContext(),"Line to complete challenge not found, try again!",Toast.LENGTH_SHORT);
+                                                            toast.show();
+                                                        }
                                                         info1.setText(stringBuilder.toString());
                                                         if (switchPage) {
                                                             pager.setCurrentItem(0, true);
@@ -602,7 +653,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                stringBuilder.insert(0, variableCount + " Variable Declarations Found\n");
+                                stringBuilder.insert(0, variableCount + "" +
+                                        " Variable Declarations Found\n");
                                 stringBuilder.append("\n" + ifCount + " If Conditions Found\n");
                                 stringBuilder.append(elseCount + " else/else if statements Found\n");
                                 stringBuilder.append(forCount + " For Loops Found\n");
@@ -666,7 +718,7 @@ public class MainActivity extends AppCompatActivity {
 
 //
 //int thisIsATest;
-//int seventeen = 17;
+//    int seventeen = 17;
 //int another=231;
 
 
